@@ -22,7 +22,7 @@
 
 #include <stdio.h>
 
-#define MAX_COUNT 30
+#define MAX_COUNT 31
 #define MAX_ORDER 6
 #define MAX_DIGIT_CODE 57
 #define MIN_DIGIT_CODE 48
@@ -30,27 +30,35 @@
 #define MAX_ORDER_VALUE 99999
 #define FLAG_VALUE -10
 #define EMPTY '\0'
+#define TRUE 1
+#define FALSE 0
+#define EQUIL 0
+#define BIGGER 1
+#define LOWER -1
 
 #define SUCCESS 0
 #define INCORRECT_NUM 1
+#define DIVISION_BY_ZERO 2
 
 #define FIRST_INPUT_MSG "Input your first number: "
 #define SECOND_INPUT_MSG "Input your second number: "
 #define FIRST_MSG_AFTER_NORM "First number after normalization: "
 #define SECOND_MSG_AFTER_NORM "Second number after normalization: "
 #define INCORRECT_NUM_MSG "Incorrect number. Please, try again!\n"
+#define DIVISION_BY_ZERO_MSG "Error! Division by zero. Please, try again!\n"
 #define TYPE_OF_OPERATION "\nType of operation on a number: DIVISION\n\n"
 #define INPUT_FORMAT "Input format: [+|-]m[.]n[Е|e][+|-][K],\n(m + n) <= 30;\nK <= 5\n\n"
 #define INPUT_RANGE "Input range:\nMIN: -0.00000000000000000000000000001 E -99999 \
 \nMAX: +999999999999999999999999999999 E 99999\n\n"
 #define OUTPUT_FORMAT "Output format: [+|-]0.m1 Е [+|-]K1,\nm1 <= 30;\nK1 <= 5\n\n"
+#define OUTPUT_MSG "Result after division: "
 
 
 typedef struct number
 {
     char sign;
     int whole_part[MAX_COUNT + 1];
-    int real_part[MAX_COUNT + 1];
+    int real_part[MAX_COUNT + 2];
     int order;
 } my_number;
 
@@ -144,8 +152,8 @@ int get_number(my_number *num)
     {
         if (ch >= MIN_DIGIT_CODE && ch <= MAX_DIGIT_CODE)
         {
-            if (ch == MIN_DIGIT_CODE && !i)
-                ch = getc(stdin);
+            if (ch == MIN_DIGIT_CODE && !i && (num->whole_part)[0] == 0)
+                continue;
             else
             {
                 (num->whole_part)[i] = ch - MIN_DIGIT_CODE;
@@ -249,11 +257,6 @@ int get_number(my_number *num)
 
 void number_normalization(my_number *num)
 {
-    // if (!((num->real_part)[MAX_COUNT]))
-    // {
-    //     (num->real_part)[MAX_COUNT] = 1;
-    // }
-
     if ((num->whole_part)[MAX_COUNT] != 1 || (num->whole_part)[0] != 0)
     {
         for (int i = (num->whole_part)[MAX_COUNT] - 1; i >= 0; --i)
@@ -269,10 +272,93 @@ void number_normalization(my_number *num)
 }
 
 
-// void division_and_print(my_number num_1, my_number num_2)
-// {
+int is_zero(int *num)
+{
+    for (int i = 0; i < num[MAX_COUNT]; ++i)
+        if (num[i])
+            return FALSE;
 
-// }
+    return TRUE;
+}
+
+
+int is_bigger(int *num_1, int *num_2)
+{
+    if (num_1[MAX_COUNT] > num_2[MAX_COUNT])
+        return BIGGER;
+    if (num_1[MAX_COUNT] < num_2[MAX_COUNT])
+        return LOWER;
+
+    for (int i = 0; i < num_2[MAX_COUNT]; ++i)
+    {
+        if (num_1[i] > num_2[i])
+            return BIGGER;
+        if (num_1[i] < num_2[i])
+            return LOWER;
+    }
+
+    return EQUIL;
+}
+
+
+void shift_numbers_and_add_zeros(int *numbers, int *ord)
+{
+    while (!numbers[0])
+    {
+        for (int i = 1; i < numbers[MAX_COUNT]; ++i)
+            numbers[i] = numbers[i - 1];
+            
+        numbers[numbers[MAX_COUNT]] = 0, --(*ord);
+    }
+}
+
+
+int division(my_number *num_1, my_number *num_2, my_number *result)
+{
+    int ind = (num_2->real_part)[MAX_COUNT] - 1;
+
+
+    if (is_zero(num_2->real_part))
+        return INCORRECT_NUM;
+
+    result->sign = (((num_1->sign) == '+' && (num_2->sign) == '-') ||
+    ((num_2->sign) == '+' && (num_1->sign) == '-')) ? '-' : '+';
+
+    for (int i = 0; !is_zero(num_1->real_part) && i < MAX_COUNT; ++i)
+    {
+        shift_numbers_and_add_zeros(num_1->real_part, &(num_1->order));
+        shift_numbers_and_add_zeros(num_2->real_part, &(num_2->order));
+
+        (result->whole_part)[i] = 0, ++((result->whole_part)[MAX_COUNT]);
+
+        if (is_bigger((num_1->real_part), (num_2->real_part)) == -1)
+        {
+            (num_1->real_part)[((num_1->real_part)[MAX_COUNT])++] = 0;
+            --(num_1->order);
+            continue;
+        }
+
+        while (is_bigger((num_1->real_part), (num_2->real_part)) >= 1)
+        {
+            for (int i = ind; i >= 0; --i)
+            {
+                if ((num_1->real_part)[i] < (num_2->real_part)[i])
+                {
+                    --((num_1->real_part)[i - 1]);
+                    (num_1->real_part)[i] += (10 - (num_2->real_part)[i]);
+                }
+                else
+                    (num_1->real_part)[i] -= (num_2->real_part)[i];
+            }
+
+            ++((result->whole_part)[i]);
+        }
+    }
+
+    result->order = num_1->order - num_2->order;
+
+    return SUCCESS;
+}
 
 
 int main(void)
@@ -285,6 +371,8 @@ int main(void)
     num_2.whole_part[0] = FLAG_VALUE, num_2.whole_part[MAX_COUNT] = 0,
     num_2.real_part[0] = FLAG_VALUE, num_2.real_part[MAX_COUNT] = 0,
     num_2.order = 0;
+    my_number result;
+    result.whole_part[MAX_COUNT] = 0;
 
 
     draw_information();
@@ -312,6 +400,15 @@ int main(void)
     number_normalization(&num_2);
     printf(SECOND_MSG_AFTER_NORM);
     show_number(&num_2);
+
+    if (division(&num_1, &num_2, &result))
+    {
+        printf(DIVISION_BY_ZERO_MSG);
+        return DIVISION_BY_ZERO;
+    }
+    printf(OUTPUT_MSG);
+    number_normalization(&result);
+    show_number(&result);
 
     return SUCCESS;
 }
