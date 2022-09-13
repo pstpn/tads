@@ -22,7 +22,7 @@
 
 #include <stdio.h>
 
-#define MAX_COUNT 31
+#define MAX_COUNT 32
 #define MAX_ORDER 6
 #define MAX_DIGIT_CODE 57
 #define MIN_DIGIT_CODE 48
@@ -58,7 +58,7 @@ typedef struct number
 {
     char sign;
     int whole_part[MAX_COUNT + 1];
-    int real_part[MAX_COUNT + 2];
+    int real_part[MAX_COUNT + 1];
     int order;
 } my_number;
 
@@ -148,7 +148,7 @@ int get_number(my_number *num)
     if (check_sign(&ch, &(num->sign)))
         return INCORRECT_NUM;
 
-    while (i < MAX_COUNT)
+    while (i < MAX_COUNT - 2)
     {
         if (ch >= MIN_DIGIT_CODE && ch <= MAX_DIGIT_CODE)
         {
@@ -185,7 +185,7 @@ int get_number(my_number *num)
         else
             return INCORRECT_NUM;
     }
-    (num->whole_part)[MAX_COUNT] = (i == MAX_COUNT) ? MAX_COUNT : (num->whole_part)[MAX_COUNT];
+    (num->whole_part)[MAX_COUNT] = (i == MAX_COUNT - 2) ? MAX_COUNT - 2 : (num->whole_part)[MAX_COUNT];
 
     while (ch == ' ')
         ch = getc(stdin);
@@ -201,7 +201,7 @@ int get_number(my_number *num)
         ch = getc(stdin);
         i = 0;
 
-        while (i < MAX_COUNT - (num->whole_part)[MAX_COUNT])
+        while (i < MAX_COUNT - 2 - (num->whole_part)[MAX_COUNT])
         {
             if (ch >= MIN_DIGIT_CODE && ch <= MAX_DIGIT_CODE)
             {
@@ -222,8 +222,8 @@ int get_number(my_number *num)
             else
                 return INCORRECT_NUM;
         }
-        (num->real_part)[MAX_COUNT] = (i == MAX_COUNT - (num->whole_part)[MAX_COUNT]) 
-        ? MAX_COUNT - (num->whole_part)[MAX_COUNT] : (num->real_part)[MAX_COUNT];
+        (num->real_part)[MAX_COUNT] = (i == MAX_COUNT - 2 - (num->whole_part)[MAX_COUNT]) 
+        ? MAX_COUNT - 2 - (num->whole_part)[MAX_COUNT] : (num->real_part)[MAX_COUNT];
 
         while (ch == ' ')
             ch = getc(stdin);
@@ -272,9 +272,9 @@ void number_normalization(my_number *num)
 }
 
 
-int is_zero(int *num)
+int is_zero(int num[], int *ind)
 {
-    for (int i = 0; i < num[MAX_COUNT]; ++i)
+    for (int i = 0; i < *ind; ++i)
         if (num[i])
             return FALSE;
 
@@ -282,12 +282,15 @@ int is_zero(int *num)
 }
 
 
-int is_bigger(int *num_1, int *num_2)
+int is_bigger(int num_1[], int num_2[], int add_check)
 {
-    if (num_1[MAX_COUNT] > num_2[MAX_COUNT])
-        return BIGGER;
-    if (num_1[MAX_COUNT] < num_2[MAX_COUNT])
-        return LOWER;
+    if (add_check)
+    {
+        if (num_1[MAX_COUNT] > num_2[MAX_COUNT])
+            return BIGGER;
+        if (num_1[MAX_COUNT] < num_2[MAX_COUNT])
+            return LOWER;
+    }
 
     for (int i = 0; i < num_2[MAX_COUNT]; ++i)
     {
@@ -301,14 +304,33 @@ int is_bigger(int *num_1, int *num_2)
 }
 
 
-void shift_numbers_and_add_zeros(int *numbers, int *ord)
+void shift_numbers_and_add_zeros(int numbers[], int *ord)
 {
     while (!numbers[0])
     {
-        for (int i = 1; i < numbers[MAX_COUNT]; ++i)
-            numbers[i] = numbers[i - 1];
+        for (int i = 0; i < numbers[MAX_COUNT] - 1; ++i)
+            numbers[i] = numbers[i + 1];
             
         numbers[numbers[MAX_COUNT]] = 0, --(*ord);
+    }
+}
+
+
+void shift(int numbers[], int left)
+{
+    if (left)
+    {
+        for (int i = 0; i < numbers[MAX_COUNT] - 1; ++i)
+            numbers[i] = numbers[i + 1];
+
+        --numbers[MAX_COUNT];
+    }
+    else
+    {
+        for (int i = numbers[MAX_COUNT]; i > 0; --i)
+            numbers[i] = numbers[i - 1];
+
+        numbers[0] = 0, ++numbers[MAX_COUNT];
     }
 }
 
@@ -318,41 +340,91 @@ int division(my_number *num_1, my_number *num_2, my_number *result)
     int ind = (num_2->real_part)[MAX_COUNT] - 1;
 
 
-    if (is_zero(num_2->real_part))
+    if (is_zero(num_2->real_part, &((num_2->real_part)[MAX_COUNT])))
         return INCORRECT_NUM;
 
     result->sign = (((num_1->sign) == '+' && (num_2->sign) == '-') ||
     ((num_2->sign) == '+' && (num_1->sign) == '-')) ? '-' : '+';
 
-    for (int i = 0; !is_zero(num_1->real_part) && i < MAX_COUNT; ++i)
+    shift_numbers_and_add_zeros(num_1->real_part, &(num_1->order));
+    shift_numbers_and_add_zeros(num_2->real_part, &(num_2->order));
+
+    while ((num_1->real_part)[MAX_COUNT] - 1 < ind)
     {
-        shift_numbers_and_add_zeros(num_1->real_part, &(num_1->order));
-        shift_numbers_and_add_zeros(num_2->real_part, &(num_2->order));
+        (num_1->real_part)[(num_1->real_part)[MAX_COUNT]++] = 0;
+        --(num_1->order);
+    }
+    if (is_bigger(num_1->real_part, num_2->real_part, TRUE) == LOWER)
+    {
+        (num_1->real_part)[(num_1->real_part)[MAX_COUNT]++] = 0;
+        --(num_1->order), ++ind;
+        shift(num_2->real_part, FALSE);
+    }
+    if ((num_1->real_part)[MAX_COUNT] > (num_2->real_part)[MAX_COUNT] &&
+    is_bigger(num_1->real_part, num_2->real_part, FALSE) == LOWER)
+    {
+        ++ind;
+        shift(num_2->real_part, FALSE);
+    }
+    
+    int index = 0;
 
-        (result->whole_part)[i] = 0, ++((result->whole_part)[MAX_COUNT]);
 
-        if (is_bigger((num_1->real_part), (num_2->real_part)) == -1)
+    for (int i = 0; !is_zero(num_1->real_part, &((num_1->real_part)[MAX_COUNT])) &&
+    i + index < MAX_COUNT - 1; ++i)
+    {
+        index += i;
+
+        (result->real_part)[index] = 0, ++(result->real_part)[MAX_COUNT];
+
+        while (is_bigger(num_1->real_part, num_2->real_part, FALSE) >= EQUIL)
         {
-            (num_1->real_part)[((num_1->real_part)[MAX_COUNT])++] = 0;
-            --(num_1->order);
-            continue;
-        }
-
-        while (is_bigger((num_1->real_part), (num_2->real_part)) >= 1)
-        {
-            for (int i = ind; i >= 0; --i)
+            for (int j = ind; j >= 0; --j)
             {
-                if ((num_1->real_part)[i] < (num_2->real_part)[i])
+                if ((num_1->real_part)[j] < (num_2->real_part)[j])
                 {
-                    --((num_1->real_part)[i - 1]);
-                    (num_1->real_part)[i] += (10 - (num_2->real_part)[i]);
+                    --((num_1->real_part)[j - 1]);
+                    (num_1->real_part)[j] += (10 - (num_2->real_part)[j]);
                 }
                 else
-                    (num_1->real_part)[i] -= (num_2->real_part)[i];
+                    (num_1->real_part)[j] -= (num_2->real_part)[j];
             }
 
-            ++((result->whole_part)[i]);
+            ++(result->real_part)[index];
         }
+
+        int point_index = -1;
+
+
+        while (is_bigger(num_1->real_part, num_2->real_part, FALSE) < EQUIL &&
+        !is_zero(num_1->real_part, &((num_1->real_part)[MAX_COUNT])))
+        {
+            if ((num_1->real_part)[MAX_COUNT] > ind + 1)
+            {  
+                if (!(num_1->real_part)[0])
+                    shift(num_1->real_part, TRUE);
+                else
+                    shift(num_2->real_part, FALSE), ++ind;
+            }
+            else if ((num_1->real_part)[MAX_COUNT] == ind + 1)
+            {
+                if (!(num_1->real_part)[0])
+                    shift(num_1->real_part, TRUE);
+                else
+                    shift(num_2->real_part, FALSE), ++ind;
+
+                (num_1->real_part)[(num_1->real_part)[MAX_COUNT]++] = 0;
+                
+                point_index = (point_index == -1) ? ++index : point_index;
+                (result->real_part)[index] = (point_index == index) ? -1 : 0;
+                (result->real_part)[MAX_COUNT] += (point_index == index) ? 0 : 1;
+            }
+
+            if (index == MAX_COUNT - 2)
+                break;
+        }
+
+        index -= i;
     }
 
     result->order = num_1->order - num_2->order;
@@ -372,7 +444,7 @@ int main(void)
     num_2.real_part[0] = FLAG_VALUE, num_2.real_part[MAX_COUNT] = 0,
     num_2.order = 0;
     my_number result;
-    result.whole_part[MAX_COUNT] = 0;
+    result.real_part[MAX_COUNT] = 0;
 
 
     draw_information();
