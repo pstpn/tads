@@ -39,6 +39,7 @@
 #define SUCCESS 0
 #define INCORRECT_NUM 1
 #define DIVISION_BY_ZERO 2
+#define OVERFLOW 3
 
 #define FIRST_INPUT_MSG "Input your first number: "
 #define SECOND_INPUT_MSG "Input your second number: "
@@ -46,6 +47,7 @@
 #define SECOND_MSG_AFTER_NORM "Second number after normalization: "
 #define INCORRECT_NUM_MSG "Incorrect number. Please, try again!\n"
 #define DIVISION_BY_ZERO_MSG "Error! Division by zero. Please, try again!\n"
+#define OVERFLOW_MSG "Error! An overflow occurred during the calculation. Please, try again!\n"
 #define TYPE_OF_OPERATION "\nType of operation on a number: DIVISION\n\n"
 #define INPUT_FORMAT "Input format: [+|-]m[.]n[Е|e][+|-][K],\n(m + n) <= 30;\nK <= 5\n\n"
 #define INPUT_RANGE "Input range:\nMIN: -0.00000000000000000000000000001 E -99999 \
@@ -86,16 +88,13 @@ void show_parts(my_number *num)
         printf("%d", (num->real_part)[j]);
 
     if ((num->order))
-        printf("\nORDER: %d",num->order);
+        printf("\nORDER: %d", num->order);
     printf("\n\n");
 }
 
 
 void show_number(my_number *num)
 {
-    char order_sign;
-
-
     printf("%c", num->sign);
     for (int i = 0; i < (num->whole_part)[MAX_COUNT]; ++i)
         printf("%d", (num->whole_part)[i]);
@@ -107,8 +106,7 @@ void show_number(my_number *num)
             printf("%d", (num->real_part)[i]);
     }
 
-    order_sign = (num->order > 0) ? '+' : EMPTY;
-    printf(" E %c%d\n\n", order_sign, num->order);
+    printf(" E %c%d\n\n", (num->order > 0) ? '+' : EMPTY, num->order);
 }
 
 
@@ -199,6 +197,9 @@ int get_number(my_number *num)
     if (ch == '.')
     {
         ch = getc(stdin);
+        if ((ch < MIN_DIGIT_CODE || ch > MAX_DIGIT_CODE) && (num->whole_part)[0] == FLAG_VALUE)
+            return INCORRECT_NUM;
+
         i = 0;
 
         while (i < MAX_COUNT - 2 - (num->whole_part)[MAX_COUNT])
@@ -255,6 +256,18 @@ int get_number(my_number *num)
 }
 
 
+void shift_numbers(int numbers[], int *ord)
+{
+    while (!numbers[0] && numbers[MAX_COUNT] > 1)
+    {
+        for (int i = 0; i < numbers[MAX_COUNT] - 1; ++i)
+            numbers[i] = numbers[i + 1];
+        --(numbers[MAX_COUNT]);
+        --(*ord);
+    }
+}
+
+
 void number_normalization(my_number *num)
 {
     if ((num->whole_part)[MAX_COUNT] != 1 || (num->whole_part)[0] != 0)
@@ -269,6 +282,8 @@ void number_normalization(my_number *num)
         }
         (num->whole_part)[MAX_COUNT] = 1, (num->whole_part)[0] = 0;
     }
+
+    shift_numbers(num->real_part, &(num->order));
 }
 
 
@@ -304,18 +319,6 @@ int is_bigger(int num_1[], int num_2[], int add_check)
 }
 
 
-void shift_numbers_and_add_zeros(int numbers[], int *ord)
-{
-    while (!numbers[0])
-    {
-        for (int i = 0; i < numbers[MAX_COUNT] - 1; ++i)
-            numbers[i] = numbers[i + 1];
-            
-        numbers[numbers[MAX_COUNT]] = 0, --(*ord);
-    }
-}
-
-
 void shift(int numbers[], int left)
 {
     if (left)
@@ -341,13 +344,15 @@ int division(my_number *num_1, my_number *num_2, my_number *result)
 
 
     if (is_zero(num_2->real_part, &((num_2->real_part)[MAX_COUNT])))
-        return INCORRECT_NUM;
+        return DIVISION_BY_ZERO;
 
     result->sign = (((num_1->sign) == '+' && (num_2->sign) == '-') ||
     ((num_2->sign) == '+' && (num_1->sign) == '-')) ? '-' : '+';
 
-    shift_numbers_and_add_zeros(num_1->real_part, &(num_1->order));
-    shift_numbers_and_add_zeros(num_2->real_part, &(num_2->order));
+    result->order = num_1->order - num_2->order;
+    result->order += (is_bigger(num_1->real_part, num_2->real_part, FALSE) == LOWER) ? 0 : 1;
+    if (result->order < MIN_ORDER_VALUE || result->order > MAX_ORDER_VALUE)
+        return OVERFLOW;
 
     while ((num_1->real_part)[MAX_COUNT] - 1 < ind)
     {
@@ -375,6 +380,9 @@ int division(my_number *num_1, my_number *num_2, my_number *result)
     {
         index += i;
 
+        while ((num_1->real_part)[MAX_COUNT] - 1 < ind)
+            (num_1->real_part)[(num_1->real_part)[MAX_COUNT]++] = 0;
+
         (result->real_part)[index] = 0, ++(result->real_part)[MAX_COUNT];
 
         while (is_bigger(num_1->real_part, num_2->real_part, FALSE) >= EQUIL)
@@ -393,31 +401,24 @@ int division(my_number *num_1, my_number *num_2, my_number *result)
             ++(result->real_part)[index];
         }
 
-        int point_index = -1;
 
-
-        while (is_bigger(num_1->real_part, num_2->real_part, FALSE) < EQUIL &&
-        !is_zero(num_1->real_part, &((num_1->real_part)[MAX_COUNT])))
+        for (int j = 0; (is_bigger(num_1->real_part, num_2->real_part, FALSE) < EQUIL &&
+        !is_zero(num_1->real_part, &((num_1->real_part)[MAX_COUNT]))); ++j)
         {
-            if ((num_1->real_part)[MAX_COUNT] > ind + 1)
-            {  
-                if (!(num_1->real_part)[0])
-                    shift(num_1->real_part, TRUE);
-                else
-                    shift(num_2->real_part, FALSE), ++ind;
-            }
-            else if ((num_1->real_part)[MAX_COUNT] == ind + 1)
-            {
-                if (!(num_1->real_part)[0])
-                    shift(num_1->real_part, TRUE);
-                else
-                    shift(num_2->real_part, FALSE), ++ind;
+            if (!(num_1->real_part)[0])
+                shift(num_1->real_part, TRUE);
+            else
+                shift(num_2->real_part, FALSE), ++ind;
 
+            if ((num_1->real_part)[MAX_COUNT] == ind + 1)
                 (num_1->real_part)[(num_1->real_part)[MAX_COUNT]++] = 0;
-                
-                point_index = (point_index == -1) ? ++index : point_index;
-                (result->real_part)[index] = (point_index == index) ? -1 : 0;
-                (result->real_part)[MAX_COUNT] += (point_index == index) ? 0 : 1;
+
+            if (j)
+            {
+                ++index;
+
+                (result->real_part)[index] = 0;
+                ++(result->real_part)[MAX_COUNT];
             }
 
             if (index == MAX_COUNT - 2)
@@ -427,7 +428,47 @@ int division(my_number *num_1, my_number *num_2, my_number *result)
         index -= i;
     }
 
-    result->order = num_1->order - num_2->order;
+    if ((result->real_part)[MAX_COUNT] == MAX_COUNT - 1)
+    {
+        if ((result->real_part)[MAX_COUNT - 2] > 4)
+        {
+            ++(result->real_part)[MAX_COUNT - 3];
+
+            for (int i = MAX_COUNT - 4; i >= 0; --i)
+            {
+                if ((result->real_part)[i + 1] > MAX_DIGIT_CODE)
+                {
+                    ++(result->real_part)[i];
+                    (result->real_part)[i + 1] = 0;
+                }
+                else
+                    break;
+            }
+
+            if ((result->real_part)[0] > MAX_DIGIT_CODE)
+            {
+                if ((result->real_part)[MAX_COUNT - 3] > 4)
+                {
+                    ++(result->real_part)[MAX_COUNT - 4];
+
+                    for (int i = MAX_COUNT - 5; i >= 0; --i)
+                    {
+                        if ((result->real_part)[i + 1] > MAX_DIGIT_CODE)
+                        {
+                            ++(result->real_part)[i];
+                            (result->real_part)[i + 1] = 0;
+                        }
+                        else
+                            break;
+                    }
+                }
+                
+                --((result->real_part)[MAX_COUNT]);
+            }
+        }
+
+        --((result->real_part)[MAX_COUNT]);
+    }
 
     return SUCCESS;
 }
@@ -445,6 +486,9 @@ int main(void)
     num_2.order = 0;
     my_number result;
     result.real_part[MAX_COUNT] = 0;
+    result.whole_part[0] = 0, result.whole_part[MAX_COUNT] = 1;
+
+    int rc;
 
 
     draw_information();
@@ -473,13 +517,20 @@ int main(void)
     printf(SECOND_MSG_AFTER_NORM);
     show_number(&num_2);
 
-    if (division(&num_1, &num_2, &result))
+    if ((rc = division(&num_1, &num_2, &result)) == DIVISION_BY_ZERO)
     {
         printf(DIVISION_BY_ZERO_MSG);
         return DIVISION_BY_ZERO;
     }
+    else if (rc == OVERFLOW)
+    {
+        printf(OVERFLOW_MSG);
+        return OVERFLOW;
+    }
+    if (is_zero(result.real_part, &((result.real_part)[MAX_COUNT])))
+        result.order = 0;
+
     printf(OUTPUT_MSG);
-    number_normalization(&result);
     show_number(&result);
 
     return SUCCESS;
