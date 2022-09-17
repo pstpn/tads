@@ -45,7 +45,7 @@
 #define SECOND_INPUT_MSG "Input your second number: "
 #define FIRST_MSG_AFTER_NORM "First number after normalization: "
 #define SECOND_MSG_AFTER_NORM "Second number after normalization: "
-#define INCORRECT_NUM_MSG "Incorrect number. Please, try again!\n"
+#define INCORRECT_NUM_MSG "Error! Incorrect number. Please, try again!\n"
 #define DIVISION_BY_ZERO_MSG "Error! Division by zero. Please, try again!\n"
 #define OVERFLOW_MSG "Error! An overflow occurred during the calculation. Please, try again!\n"
 #define TYPE_OF_OPERATION "\nType of operation on a number: DIVISION\n\n"
