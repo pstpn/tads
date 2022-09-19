@@ -47,14 +47,20 @@ void show_parts(my_number *num)
 
 void show_number(my_number *num)
 {
+    int zeros_count = 0;
+
+
     printf("%c", num->sign);
     for (int i = 0; i < (num->whole_part)[MAX_COUNT]; ++i)
         printf("%d", (num->whole_part)[i]);
     
-    if ((num->real_part)[MAX_COUNT] > 0)
+    for (int i = num->real_part[MAX_COUNT] - 1; i >= 0 && !((num->real_part)[i]); --i)
+        ++zeros_count;
+
+    if ((num->real_part)[MAX_COUNT] - zeros_count > 0)
     {
         printf(".");
-        for (int i = 0; i < (num->real_part)[MAX_COUNT]; ++i)
+        for (int i = 0; i < (num->real_part)[MAX_COUNT] - zeros_count; ++i)
             printf("%d", (num->real_part)[i]);
     }
 

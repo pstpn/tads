@@ -16,6 +16,7 @@
 #define MAX_ORDER 6
 #define MAX_DIGIT_CODE 57
 #define MIN_DIGIT_CODE 48
+#define MAX_DIGIT 9
 #define MIN_ORDER_VALUE -99999
 #define MAX_ORDER_VALUE 99999
 #define FLAG_VALUE -10

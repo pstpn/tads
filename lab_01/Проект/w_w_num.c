@@ -131,7 +131,7 @@ int division(my_number *num_1, my_number *num_2, my_number *result)
 
             for (int i = MAX_COUNT - 4; i >= 0; --i)
             {
-                if ((result->real_part)[i + 1] > MAX_DIGIT_CODE)
+                if ((result->real_part)[i + 1] > MAX_DIGIT)
                 {
                     ++(result->real_part)[i];
                     (result->real_part)[i + 1] = 0;
@@ -140,7 +140,7 @@ int division(my_number *num_1, my_number *num_2, my_number *result)
                     break;
             }
 
-            if ((result->real_part)[0] > MAX_DIGIT_CODE)
+            if ((result->real_part)[0] > MAX_DIGIT)
             {
                 if ((result->real_part)[MAX_COUNT - 3] > 4)
                 {
@@ -148,7 +148,7 @@ int division(my_number *num_1, my_number *num_2, my_number *result)
 
                     for (int i = MAX_COUNT - 5; i >= 0; --i)
                     {
-                        if ((result->real_part)[i + 1] > MAX_DIGIT_CODE)
+                        if ((result->real_part)[i + 1] > MAX_DIGIT)
                         {
                             ++(result->real_part)[i];
                             (result->real_part)[i + 1] = 0;
