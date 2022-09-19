@@ -24,5 +24,7 @@
 \nMAX: +999999999999999999999999999999 E 99999\n\n"
 #define OUTPUT_FORMAT "Output format: [+|-]0.m1 Е [+|-]K1,\nm1 <= 30;\nK1 <= 5\n\n"
 #define OUTPUT_MSG "Result after division: "
+#define RULE "\n\n1       10        20        30\n┌───┬────┬────┬────┬────┬────┐\n"
+#define OUT_RULE "\n\n   1       10        20        30\n   ┌───┬────┬────┬────┬────┬────┐\n"
 
 #endif // ___MY_MSG___

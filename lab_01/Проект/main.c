@@ -48,6 +48,7 @@ int main(void)
     draw_information();
 
     printf(FIRST_INPUT_MSG);
+    printf(RULE);
     if (get_number(&num_1))
     {
         printf(INCORRECT_NUM_MSG);
@@ -56,6 +57,7 @@ int main(void)
     show_parts(&num_1);
 
     printf(SECOND_INPUT_MSG);
+    printf(RULE);
     if (get_number(&num_2))
     {
         printf(INCORRECT_NUM_MSG);
@@ -85,6 +87,7 @@ int main(void)
         result.order = 0;
 
     printf(OUTPUT_MSG);
+    printf(OUT_RULE);
     show_number(&result);
 
     return SUCCESS;
