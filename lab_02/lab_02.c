@@ -58,7 +58,8 @@
 #define ERR_ADD_MSG "\nНе удалось добавить запись, так как введено некорректное значение. Попробуйте снова.\n\n"
 #define ERR_DEL_MSG "\nНе удалось удалить запись, так как введено некорректное значение. Попробуйте снова.\n\n"
 #define INPUT_MSG "\n\
-1  --  Поиск информации о гарантии на новые автомобили\n\
+1  --  Поиск информации о неновых автомобилях указанной марки с одним предыдущим \
+собственником, отсутствием ремонта в указанном диапазоне цен\n\
 2  --  Упорядочить таблицу автомобилей по возрастанию цены на автомобиль и вывести\n\
 3  --  Упорядочить таблицу ключей по возрастанию цены на автомобиль и вывести\n\
 4  --  Вывести исходную таблицу\n\
@@ -87,7 +88,9 @@ MILEAGE | REPAIRS | OWNERS |\n"
 #define IN_OWN "\nВведите количество владельцев (до 99): "
 #define ADD_IN_FILE_MSG "\nЗапись была успешно добавлена в таблицу! Желаете ли Вы также добавить \
 эту информацию в исходный файл? ('y' to continue): "
-#define IN_FIND_MSG "\nВведите гарантия, которую Вы хотите найти: "
+#define IN_FIND_MODEL_MSG "\nВведите марку автомобиля, который Вы хотите найти: "
+#define IN_FIND_MIN_PRICE_MSG "\nВведите минимальную цену: "
+#define IN_FIND_MAX_PRICE_MSG "\nВведите максимальную цену: "
 #define IN_DEL_MSG "\nВведите цену для удаления всех записей с ней: "
 
 
@@ -221,6 +224,8 @@ int get_str(FILE *f, char *str, int max_len, char sep)
     int len = 0;
 
     char ch = getc(f);
+    if (sep == NEW_SEP)
+        ch = fgetc(f);
 
 
     while (ch != sep)
@@ -334,11 +339,30 @@ int get_tables(FILE *f, car_info table[], help_table index_table[], int *count)
 
 int finding_info(car_info cars[], int count)
 {
-    int guar;
+    char model[MODEL_LEN + 1] = { '\0' };
+
+    int min_price, max_price;
 
 
-    printf(IN_FIND_MSG);
-    if (fscanf(stdin, "%d", &guar) != 1 || guar < 0 || guar > MAX_GUAR)
+    printf(IN_FIND_MODEL_MSG);
+    if (get_str(stdin, model, MODEL_LEN + 1, NEW_SEP))
+    {
+        clear_buf(stdin);
+        return INCORRECT_GUAR;
+    }
+
+    printf(IN_FIND_MIN_PRICE_MSG);
+    if (fscanf(stdin, "%d", &min_price) != 1 ||
+    min_price < 1 || min_price > MAX_PRICE)
+    {
+        clear_buf(stdin);
+        return INCORRECT_GUAR;
+    }
+
+    printf(IN_FIND_MAX_PRICE_MSG);
+    if (fscanf(stdin, "%d", &max_price) != 1 ||
+    max_price < 1 || max_price > MAX_PRICE ||
+    max_price < min_price)
     {
         clear_buf(stdin);
         return INCORRECT_GUAR;
@@ -347,7 +371,10 @@ int finding_info(car_info cars[], int count)
     draw_name(TABLE_NAME, TABLE_WIDTH);
 
     for (int i = 0; i < count; ++i)
-        if (!cars[i].condition && cars[i].add_info.guarantee == guar)
+        if (cars[i].condition && strcmp(model, cars[i].model) == 0 &&
+        cars[i].add_info.old_car.number_of_owners == 1 &&
+        cars[i].add_info.old_car.number_of_repairs == 0 &&
+        cars[i].price >= min_price && cars[i].price <= max_price)
         {
             print_car(cars[i]);
             draw_line(TABLE_WIDTH);
