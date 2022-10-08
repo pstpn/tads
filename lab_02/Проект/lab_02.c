@@ -10,7 +10,7 @@
 #define OVERFLOW 3
 #define INCORRECT_DATA 4
 #define INCORRECT_CODE 5
-#define INCORRECT_GUAR 6
+#define INCORRECT_MODEL 6
 #define INCORRECT_PRICE 7
 
 #define MODEL_LEN 11
@@ -18,7 +18,7 @@
 #define COLOR_LEN 11
 #define CONDITION_LEN 11
 #define FILENAME_LEN 20
-#define RECORDS_COUNT 1500
+#define RECORDS_COUNT 20000
 #define PRICE_LEN 11
 #define YEAR_LEN 6
 #define MIL_LEN 9
@@ -53,7 +53,7 @@
 #define ERR_CREATE_MSG "\nНе удалось создать файл с таким именем. Попробуйте снова.\n\n"
 #define ERR_READING_MSG "\nНе удалось прочитать файл с данными. Попробуйте снова.\n\n"
 #define ERR_OPEN_MSG "\nНе удалось открыть файл. Попробуйте снова.\n\n"
-#define ERR_CODE_MSG "\nНекорректный код. Повторите попытку.\n\n"
+#define ERR_CODE_MSG "\nНекорректный код. Попробуйте снова.\n\n"
 #define ERR_OVER_MSG "\nПроизошло переполнение таблицы. Освободите место и попробуйте снова.\n\n"
 #define ERR_ADD_MSG "\nНе удалось добавить запись, так как введено некорректное значение. Попробуйте снова.\n\n"
 #define ERR_DEL_MSG "\nНе удалось удалить запись, так как введено некорректное значение. Попробуйте снова.\n\n"
@@ -348,7 +348,7 @@ int finding_info(car_info cars[], int count)
     if (get_str(stdin, model, MODEL_LEN + 1, NEW_SEP))
     {
         clear_buf(stdin);
-        return INCORRECT_GUAR;
+        return INCORRECT_MODEL;
     }
 
     printf(IN_FIND_MIN_PRICE_MSG);
@@ -356,7 +356,7 @@ int finding_info(car_info cars[], int count)
     min_price < 1 || min_price > MAX_PRICE)
     {
         clear_buf(stdin);
-        return INCORRECT_GUAR;
+        return INCORRECT_PRICE;
     }
 
     printf(IN_FIND_MAX_PRICE_MSG);
@@ -365,7 +365,7 @@ int finding_info(car_info cars[], int count)
     max_price < min_price)
     {
         clear_buf(stdin);
-        return INCORRECT_GUAR;
+        return INCORRECT_PRICE;
     }
 
     draw_name(TABLE_NAME, TABLE_WIDTH);
