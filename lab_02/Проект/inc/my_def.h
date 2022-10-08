@@ -17,10 +17,10 @@
 #define NUM_LEN 17
 #define SLOW_LEN 16
 #define QUICK_LEN 17
-#define TIME_MEM_LEN 8
+#define TIME_MEM_LEN 10
 #define TABLE_WIDTH 113
 #define KEY_TABLE_WIDTH 49
-#define MEASURE_TABLE_WIDTH 79
+#define MEASURE_TABLE_WIDTH 81
 #define MAX_PRICE 99999999
 #define MAX_GUAR 99
 #define MAX_YEAR 2022
@@ -31,6 +31,7 @@
 #define FALSE 0
 #define MENU_LEN 11
 #define COUNT_MEAS 4
+#define COUNT 10
 
 #define SEP ';'
 #define NEW_SEP '\n'

@@ -28,7 +28,7 @@
 #define TABLE_NAME "|   MODEL   |    COUNTRY    |   PRICE   |   COLOR   | CONDITION | GUARANTEE | YEAR | \
 MILEAGE | REPAIRS | OWNERS |\n"
 #define KEY_TABLE_NAME "|        №        |      INDEX      |   PRICE   |\n"
-#define MEASURE_TABLE_NAME "        | SLOW SORT DATA | QUICK SORT DATA | SLOW SORT KEYS | QUICK SORT KEYS |\n"
+#define MEASURE_TABLE_NAME "          | SLOW SORT DATA | QUICK SORT DATA | SLOW SORT KEYS | QUICK SORT KEYS |\n"
 #define IN_MODEL_MSG "\nВведите модель машины (до 11 символов): "
 #define IN_COUNTRY_MSG "\nВведите страну-производитель автомобиля (до 15 символов): "
 #define IN_PRICE_MSG "\nВведите цену автомобиля (до 8 цифр): "

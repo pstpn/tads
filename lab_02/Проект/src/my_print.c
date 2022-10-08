@@ -98,11 +98,11 @@ void print_measures(measurement_table measures[])
 {
     draw_name(MEASURE_TABLE_NAME, MEASURE_TABLE_WIDTH);
 
-    printf("%*s|%*llu|%*llu|%*llu|%*llu|\n", TIME_MEM_LEN, "TIME",
+    printf("%*s|%*llu|%*llu|%*llu|%*llu|\n", TIME_MEM_LEN, "TIME, mcs",
     SLOW_LEN, measures[0].time, QUICK_LEN, measures[1].time,
     SLOW_LEN, measures[2].time, QUICK_LEN, measures[3].time);
     draw_line(MEASURE_TABLE_WIDTH);
-    printf("%*s|%*d|%*d|%*d|%*d|\n", TIME_MEM_LEN, "MEMORY", SLOW_LEN,
+    printf("%*s|%*d|%*d|%*d|%*d|\n", TIME_MEM_LEN, "MEMORY, b", SLOW_LEN,
     measures[0].mem, QUICK_LEN, measures[1].mem, SLOW_LEN,
     measures[2].mem, QUICK_LEN, measures[3].mem);
     draw_line(MEASURE_TABLE_WIDTH);

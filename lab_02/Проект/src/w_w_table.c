@@ -62,7 +62,6 @@ int adding_car_in_table(FILE *f, car_info *car, int *count)
     if (*count + 1 > RECORDS_COUNT)
         return OVERFLOW;
 
-    clear_buf(stdin);
     printf(IN_MODEL_MSG);        
     if (get_str(stdin, car->model, MODEL_LEN + 1, NEW_SEP))
         return INCORRECT_DATA;
