@@ -57,15 +57,16 @@
 #define ERR_GET_SIZES_MSG "\nНе удалось получить корректную размерность. Попробуйте снова.\n\n"
 #define ERR_CODE_MSG "\nНекорректный код. Попробуйте снова.\n\n"
 #define ERR_READING_STDIN_MSG "\nНе удалось прочитать данные. Попробуйте снова.\n\n"
+#define ERR_SIZES_MSG "\nРазмеры матриц не равны. Попробуйте снова.\n\n"
 #define MENU_MSG  "\n\
 1  --  Вывести матрицу\n\
 2  --  Заполнить пустую матрицу\n\
-3  --  Выполнить сложение матриц, хранящихся в виде трех векторов\n\
-4  --  Выполнить сложение матриц, применяя стандартный алгоритм работы\n\
+3  --  Выполнить сложение матриц, хранящихся в виде трех векторов, и вывести\n\
+4  --  Выполнить сложение матриц, применяя стандартный алгоритм работы, и вывести\n\
 5  --  Сравнить время выполнения операция и объем памяти при использовании двух алгоритмов\n\
 0  --  Выход\n: "
 #define PRINT_MATRIX_MSG "\nВыберите матрицу для вывода:\n1 -- Первая матрица\n2 -- Вторая матрица\n: "
-#define EMPTY_MATRIX_MSG "\nВыбранная матрица пустая.\n\n"
+#define EMPTY_MATRIX_MSG "\nМатрица пустая. Заполните матрицу и попробуйте снова.\n\n"
 #define FILLED_MATRIX_MSG "\nМатрица непустая.\n\n"
 #define ENTER_SIZES_MSG "\nВведите размерность новой матрицы (в виде \"n m\"): "
 #define FILLING_MATRIX_MSG "\nВыберите матрицу для заполнения:\n1 -- Первая матрица\n2 -- Вторая матрица\n: "
@@ -197,6 +198,34 @@ void print_matrix(int **p_mtrx, int n, int m)
 }
 
 
+void free_matrix(int **data, int n)
+{
+    for (int i = 0; i < n; i++)
+        free(data[i]);
+
+    free(data);
+}
+
+
+int matrix_addition_and_print(int **mtrx_1, int **mtrx_2, int n, int m)
+{
+    int **buf_mtrx = allocate_matrix(n, m);
+    if (!buf_mtrx)
+        return ERR_ALLOC;
+
+
+    for (int i = 0; i < n; ++i)
+        for (int j = 0; j < m; ++j)
+            buf_mtrx[i][j] = mtrx_1[i][j] + mtrx_2[i][j];
+
+    print_matrix(buf_mtrx, n, m);
+
+    free_matrix(buf_mtrx, 1);
+
+    return SUCCESS;
+}
+
+
 void free_spec_matrix(spar_mtrx_t *mtrx)
 {
     free(mtrx->a);
@@ -205,12 +234,34 @@ void free_spec_matrix(spar_mtrx_t *mtrx)
 }
 
 
-void free_matrix(int **data, int n)
+int matrix_spec_addition_and_print(spar_mtrx_t *mtrx_1, spar_mtrx_t *mtrx_2, int n, int m)
 {
-    for (int i = 0; i < n; i++)
-        free(data[i]);
+    spar_mtrx_t buf_mtrx;
+    buf_mtrx.a = NULL, buf_mtrx.ja = NULL, buf_mtrx.ia = NULL;
 
-    free(data);
+    if (allocate_spec_matrix(&buf_mtrx, n, m))
+        return ERR_ALLOC;
+
+    int ind = 0;
+
+
+    for (int i = 0; i < n; ++i)
+    {
+        if (mtrx_1->ia[i] == -1 && mtrx_2->ia[i] > 0 ||
+            mtrx_1->ia[i] > 0 && mtrx_2->ia[i] == -1)
+            for (int j = 0; j < m, ++j)
+            {
+                
+            }
+
+    }
+            
+
+    print_matrix(buf_mtrx, n, m);
+
+    free_spec_matrix(&buf_mtrx);
+
+    return SUCCESS;
 }
 
 
@@ -509,11 +560,45 @@ int main(void)
             }
             case 3:
             {
+                if (!n_1 || !n_2 || !m_1 || !m_2)
+                {
+                    printf(EMPTY_MATRIX_MSG);
+                    break;
+                }
+                
+                if (n_1 != n_2 || m_1 != m_2)
+                {
+                    printf(ERR_SIZES_MSG);
+                    break;
+                }
+
+                if (matrix_addition_and_print(p_mtrx_1, p_mtrx_2, n_1, m_1))
+                {
+                    printf(ERR_ALLOC_MSG);
+                    break;
+                }
                 
                 break;
             }
             case 4:
             {
+                if (!n_1 || !n_2 || !m_1 || !m_2)
+                {
+                    printf(EMPTY_MATRIX_MSG);
+                    break;
+                }
+                
+                if (n_1 != n_2 || m_1 != m_2)
+                {
+                    printf(ERR_SIZES_MSG);
+                    break;
+                }
+
+                if (matrix_spec_addition_and_print(p_mtrx_1, p_mtrx_2, n_1, m_1))
+                {
+                    printf(ERR_ALLOC_MSG);
+                    break;
+                }
                 
                 break;
             }
