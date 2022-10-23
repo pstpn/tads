@@ -12,7 +12,7 @@
 #define OUT_TABLE_WIDTH 27
 #define COUNT_MEAS 10
 #define COUNT_SIZES 4
-#define MEAS_LEN 100
+#define MEAS_LEN 80
 
 #define MEAS_TABLE_WIDTH 82
 #define TYPE_LEN 16

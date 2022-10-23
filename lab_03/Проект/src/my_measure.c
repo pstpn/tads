@@ -24,7 +24,7 @@ unsigned long long microseconds_now(void)
 }
 
 
-int get_measures(measurement_table table[])
+int get_measures(measurement_table table[MEAS_LEN])
 {
     int filling[COUNT_MEAS] = { 1, 5, 10, 15, 20, 30, 50, 70, 90, 100 };
     int sizes[COUNT_SIZES] = { 5, 50, 100, 500 };
@@ -43,6 +43,8 @@ int get_measures(measurement_table table[])
 
     int count_nonzero_1 = 0;
     int count_nonzero_2 = 0;
+
+    int num = 0;
 
     long long unsigned beg, end, res, res_s;
 
@@ -195,6 +197,19 @@ int get_measures(measurement_table table[])
 
                 res_s += (end - beg);
             }
+
+            table[num].mtrx_type = 'c';
+            table[num].time = res / COUNT_MEAS;
+            table[num].n = n_1, table[num].m = m_1;
+            table[num].fill = filling[i];
+            table[num++].mem = 2 * (sizeof(int *) * n_1 + n_1 * m_1 * sizeof(int));
+
+            table[num].mtrx_type = 's';
+            table[num].time = res_s / COUNT_MEAS;
+            table[num].n = n_1, table[num].m = m_1;
+            table[num].fill = filling[i];
+            table[num++].mem = count_nonzero_1 * sizeof(int) * 2 +
+                count_nonzero_2 * sizeof(int) * 2 + n_1 * sizeof(int) * 2;
             
             free_matrix(p_mtrx_1, 1);
             free_spec_matrix(&a_1);
@@ -202,19 +217,6 @@ int get_measures(measurement_table table[])
             free_spec_matrix(&a_2);
             free_matrix(res_mtrx, 1);
             free_spec_matrix(&res_spec_mtrx);
-
-            table->mtrx_type = 'c';
-            table->time = res / COUNT_MEAS;
-            table->n = n_1, table->m = m_1;
-            table->fill = filling[i];
-            table->mem = 2 * (sizeof(int *) * n_1 + n_1 * m_1 * sizeof(int));
-
-            table->mtrx_type = 's';
-            table->time = res_s / COUNT_MEAS;
-            table->n = n_1, table->m = m_1;
-            table->fill = filling[i];
-            table->mem = count_nonzero_1 * sizeof(int) * 2 +
-                count_nonzero_2 * sizeof(int) * 2 + n_1 * sizeof(int) * 2;
         }
     
     return SUCCESS;
