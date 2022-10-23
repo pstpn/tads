@@ -40,5 +40,9 @@ if __name__ == "__main__":
     zero_count = n * m - int(n * m * (percent / 100))
 
     filename = input("Введите имя файла, в который сохранить матрицу: ")
+    if filename == "y":
+        filename = "m_1.txt"
+    if filename == "g":
+        filename = "m_2.txt"
     
     generate_and_write()

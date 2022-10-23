@@ -64,8 +64,8 @@
 #define MENU_MSG  "\n\
 1  --  Вывести матрицу\n\
 2  --  Заполнить пустую матрицу\n\
-3  --  Выполнить сложение матриц, хранящихся в виде трех векторов, и вывести\n\
-4  --  Выполнить сложение матриц, применяя стандартный алгоритм работы, и вывести\n\
+3  --  Выполнить сложение матриц, применяя стандартный алгоритм работы, и вывести\n\
+4  --  Выполнить сложение матриц, хранящихся в виде трех векторов, и вывести\n\
 5  --  Сравнить время выполнения операция и объем памяти при использовании двух алгоритмов\n\
 0  --  Выход\n: "
 #define PRINT_MATRIX_MSG "\nВыберите матрицу для вывода:\n1 -- Первая матрица\n2 -- Вторая матрица\n: "
@@ -74,7 +74,8 @@
 #define ENTER_SIZES_MSG "\nВведите размерность новой матрицы (в виде \"n m\"): "
 #define FILLING_MATRIX_MSG "\nВыберите матрицу для заполнения:\n1 -- Первая матрица\n2 -- Вторая матрица\n: "
 #define INPUT_ELEMS_MSG "\nВведите элементы матрицы, разделяя их пробелом:\n\n"
-#define SPEC_TABLE_MSG "\n|   A   |   JA   |   IA   |\n"
+#define SPEC_TABLE_MSG "|   A   |   JA   |   IA   |\n"
+#define SEP_MSG "---------------------------\n"
 
 
 typedef struct
@@ -179,7 +180,7 @@ int read_matrix(FILE *f, int **p_mtrx, int n, int m, int *count_nonzero)
                 return ERR_READING;
 
             if (p_mtrx[i][j])
-                *(++count_nonzero);
+                ++(*count_nonzero);
         }
     }
 
@@ -223,7 +224,7 @@ int is_new_str(spar_mtrx_t *mtrx, int ind, int ind_str, int n)
 
 void get_count_elems_in_str(spar_mtrx_t *mtrx, int ind_str, int *count, int prev_count, int n)
 {
-    if (mtrx->ia < 0)
+    if (mtrx->ia[ind_str] < 0)
         *count = 0;
     else
     {
@@ -234,18 +235,26 @@ void get_count_elems_in_str(spar_mtrx_t *mtrx, int ind_str, int *count, int prev
                 ++(*count);
         else
         {
-            for (int i = prev_count + 1; mtrx->ja[i] != mtrx->ia[ind_str + 1]; ++i)
+            int add = 1;
+
+
+            while (add + ind_str < n && mtrx->ia[ind_str + add] == -1)
+                ++add;
+
+            for (int i = prev_count + 1; add + ind_str < n &&
+                mtrx->ja[i] != mtrx->ia[ind_str + add]; ++i)
                 ++(*count);
 
-            if (!is_new_str(mtrx, prev_count + *count, mtrx->ia[ind_str + 1], n))
-                for (int i = prev_count + *count; mtrx->ja[i] != mtrx->ia[ind_str + 1]; ++i)
+            if (!(add + ind_str == n - 1) &&
+                !is_new_str(mtrx, prev_count + *count, ind_str + add, n))
+                for (int i = prev_count + *count; mtrx->ja[i] != mtrx->ia[ind_str + add]; ++i)
                     ++(*count);
         }
     }
 }
 
 
-void matrix_spec_addition(spar_mtrx_t *mtrx_1, spar_mtrx_t *mtrx_2, spar_mtrx_t *res_mtrx, int n, int m)
+void matrix_spec_addition(spar_mtrx_t *mtrx_1, spar_mtrx_t *mtrx_2, spar_mtrx_t *res_mtrx, int n)
 {
     int ind = 0;
     int m_1_c, prev_1_c = 0;
@@ -286,22 +295,26 @@ void matrix_spec_addition(spar_mtrx_t *mtrx_1, spar_mtrx_t *mtrx_2, spar_mtrx_t 
 
             res_mtrx->ia[i] = (mtrx_1->ia[i] < mtrx_2->ia[i]) ? mtrx_1->ia[i] : mtrx_2->ia[i];
 
-            while (ind_1 < m_1_c && ind_2 < m_2_c)
+            while (ind_1 < m_1_c + prev_1_c || ind_2 < m_2_c + prev_2_c)
             {
-                if (mtrx_1->ja[prev_1_c + ind_1] < mtrx_2->ja[prev_2_c + ind_2])
+                if (ind_2 >= m_2_c + prev_2_c ||
+                    (mtrx_1->ja[ind_1] < mtrx_2->ja[ind_2] &&
+                    ind_1 < m_1_c + prev_1_c && ind_2 < m_2_c + prev_2_c))
                 {
-                    res_mtrx->ja[ind] = mtrx_1->ja[prev_1_c + ind_1];
-                    res_mtrx->ja[ind++] = mtrx_1->a[prev_1_c + ind_1++];
+                    res_mtrx->ja[ind] = mtrx_1->ja[ind_1];
+                    res_mtrx->a[ind++] = mtrx_1->a[ind_1++];
                 }
-                else if (mtrx_1->ja[prev_1_c + ind_1] > mtrx_2->ja[prev_2_c + ind_2])
+                else if (ind_1 >= m_1_c + prev_1_c ||
+                    (mtrx_1->ja[ind_1] > mtrx_2->ja[ind_2] &&
+                    ind_1 < m_1_c + prev_1_c && ind_2 < m_2_c + prev_2_c))
                 {
-                    res_mtrx->ja[ind] = mtrx_2->ja[prev_2_c + ind_2];
-                    res_mtrx->ja[ind++] = mtrx_2->a[prev_2_c + ind_2++];
+                    res_mtrx->ja[ind] = mtrx_2->ja[ind_2];
+                    res_mtrx->a[ind++] = mtrx_2->a[ind_2++];
                 }
                 else
                 {
-                    res_mtrx->ja[ind] = mtrx_2->ja[prev_2_c + ind_2] + mtrx_1->ja[prev_1_c + ind_1++];
-                    res_mtrx->ja[ind++] = mtrx_2->a[prev_2_c + ind_2++];
+                    res_mtrx->ja[ind] = mtrx_2->ja[ind_2] + mtrx_1->ja[ind_1++];
+                    res_mtrx->a[ind++] = mtrx_2->a[ind_2++];
                 }
             }
         }
@@ -338,9 +351,14 @@ void print_matrix(int **p_mtrx, int n, int m)
 
 void print_spec_matrix(spar_mtrx_t *mtrx, int n)
 {
+    printf(SEP_MSG);
     printf(SPEC_TABLE_MSG);
+    printf(SEP_MSG);
+
+    int max = (mtrx->count < n) ? n : mtrx->count;
     
-    for (int i = 0; i < (mtrx->count < n) ? n : mtrx->count; ++i)
+
+    for (int i = 0; i < max; ++i)
     {
         if (i < mtrx->count)
             printf("|%*d|%*d|", FIELD_WIDTH - 1, mtrx->a[i], FIELD_WIDTH,
@@ -351,8 +369,9 @@ void print_spec_matrix(spar_mtrx_t *mtrx, int n)
         else if (i < n)
             printf("%*d|\n", FIELD_WIDTH, mtrx->ia[i]);
         else
-            printf("\n");
+            printf("%*c|\n", FIELD_WIDTH, ' ');
     }
+    printf(SEP_MSG);
 }
 
 
@@ -730,7 +749,7 @@ int main(void)
                     break;
                 }
 
-                matrix_spec_addition(&a_1, &a_2, &res_spec_mtrx, n_1, m_1);
+                matrix_spec_addition(&a_1, &a_2, &res_spec_mtrx, n_1);
 
                 print_spec_matrix(&res_spec_mtrx, n_1);
 
