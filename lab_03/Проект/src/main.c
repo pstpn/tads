@@ -43,6 +43,9 @@
 #define INDENT 2
 #define BIG_INDENT 5
 #define MAX_P_LEN 20
+#define TRUE 1
+#define FALSE 0
+#define FIELD_WIDTH 8
 
 #define INFO_MSG "\n- Формат входных данных: 2 целочисленные матрицы одинакового размера, \
 содержащиеся в файлах в простом виде\n\n- Операция, производимая программой: сложение матриц\n\n\
@@ -71,6 +74,7 @@
 #define ENTER_SIZES_MSG "\nВведите размерность новой матрицы (в виде \"n m\"): "
 #define FILLING_MATRIX_MSG "\nВыберите матрицу для заполнения:\n1 -- Первая матрица\n2 -- Вторая матрица\n: "
 #define INPUT_ELEMS_MSG "\nВведите элементы матрицы, разделяя их пробелом:\n\n"
+#define SPEC_TABLE_MSG "\n|   A   |   JA   |   IA   |\n"
 
 
 typedef struct
@@ -78,6 +82,7 @@ typedef struct
     int *a;
     int *ja;
     int *ia;
+    int count;
 } spar_mtrx_t;
 
 
@@ -94,13 +99,13 @@ int get_size(FILE *f, int *n, int *m)
 }
 
 
-int allocate_spec_matrix(spar_mtrx_t *mtrx, int n, int m)
+int allocate_spec_matrix(spar_mtrx_t *mtrx, int n, int count_nonzero)
 {
-    mtrx->a = calloc(n * m, sizeof(int));
+    mtrx->a = calloc(count_nonzero, sizeof(int));
     if (!mtrx->a)
         return ERR_ALLOC;
 
-    mtrx->ja = calloc(n * m, sizeof(int));
+    mtrx->ja = calloc(count_nonzero, sizeof(int));
 
     if (!mtrx->ja)
     {
@@ -164,16 +169,150 @@ void read_spec_matrix(int **p_mtrx, spar_mtrx_t *mtrx, int n, int m)
 }
 
 
-int read_matrix(FILE *f, int **p_mtrx, int n, int m)
+int read_matrix(FILE *f, int **p_mtrx, int n, int m, int *count_nonzero)
 {
     for (int i = 0; i < n; ++i)
     {
         for (int j = 0; j < m; ++j)
+        {
             if (fscanf(f, "%d", &(p_mtrx[i][j])) != 1)
                 return ERR_READING;
+
+            if (p_mtrx[i][j])
+                *(++count_nonzero);
+        }
     }
 
     return SUCCESS;
+}
+
+
+void matrix_addition(int **mtrx_1, int **mtrx_2, int **res_mtrx, int n, int m)
+{
+    for (int i = 0; i < n; ++i)
+        for (int j = 0; j < m; ++j)
+            res_mtrx[i][j] = mtrx_1[i][j] + mtrx_2[i][j];
+}
+
+
+int is_new_str(spar_mtrx_t *mtrx, int ind, int ind_str, int n)
+{
+    int ja_c = 1;
+    int ia_c = 1;
+
+
+    for (int i = ind + 1; i < mtrx->count; ++i)
+    {
+        if (mtrx->ja[i] == mtrx->ja[ind])
+            ++ja_c;
+        else
+            break;
+    }
+
+    for (int i = ind_str + 1; i < n; ++i)
+    {
+        if (mtrx->ia[i] == mtrx->ia[ind_str])
+            ++ia_c;
+        else
+            break;
+    }
+
+    return (ja_c > ia_c) ? FALSE : TRUE;
+}
+
+
+void get_count_elems_in_str(spar_mtrx_t *mtrx, int ind_str, int *count, int prev_count, int n)
+{
+    if (mtrx->ia < 0)
+        *count = 0;
+    else
+    {
+        *count = 1;
+
+        if (ind_str + 1 == n)
+            for (int i = prev_count + 1; i < mtrx->count; ++i)
+                ++(*count);
+        else
+        {
+            for (int i = prev_count + 1; mtrx->ja[i] != mtrx->ia[ind_str + 1]; ++i)
+                ++(*count);
+
+            if (!is_new_str(mtrx, prev_count + *count, mtrx->ia[ind_str + 1], n))
+                for (int i = prev_count + *count; mtrx->ja[i] != mtrx->ia[ind_str + 1]; ++i)
+                    ++(*count);
+        }
+    }
+}
+
+
+void matrix_spec_addition(spar_mtrx_t *mtrx_1, spar_mtrx_t *mtrx_2, spar_mtrx_t *res_mtrx, int n, int m)
+{
+    int ind = 0;
+    int m_1_c, prev_1_c = 0;
+    int m_2_c, prev_2_c = 0;
+
+
+    for (int i = 0; i < n; ++i)
+    {
+        get_count_elems_in_str(mtrx_1, i, &m_1_c, prev_1_c, n);
+
+        get_count_elems_in_str(mtrx_2, i, &m_2_c, prev_2_c, n);
+
+        if (m_1_c && !m_2_c)
+        {
+            res_mtrx->ia[i] = mtrx_1->ia[i];
+
+            for (int j = prev_1_c; j < prev_1_c + m_1_c; ++j)
+            {
+                res_mtrx->a[ind] = mtrx_1->a[j];
+                res_mtrx->ja[ind++] = mtrx_1->ja[j];
+            }
+        }
+        else if (!m_1_c && m_2_c)
+        {
+            res_mtrx->ia[i] = mtrx_2->ia[i];
+
+            for (int j = prev_2_c; j < prev_2_c + m_2_c; ++j)
+            {
+                res_mtrx->a[ind] = mtrx_2->a[j];
+                res_mtrx->ja[ind++] = mtrx_2->ja[j];
+            }
+        }
+        else if (m_1_c && m_2_c)
+        {
+            int ind_1 = prev_1_c;
+            int ind_2 = prev_2_c;
+
+
+            res_mtrx->ia[i] = (mtrx_1->ia[i] < mtrx_2->ia[i]) ? mtrx_1->ia[i] : mtrx_2->ia[i];
+
+            while (ind_1 < m_1_c && ind_2 < m_2_c)
+            {
+                if (mtrx_1->ja[prev_1_c + ind_1] < mtrx_2->ja[prev_2_c + ind_2])
+                {
+                    res_mtrx->ja[ind] = mtrx_1->ja[prev_1_c + ind_1];
+                    res_mtrx->ja[ind++] = mtrx_1->a[prev_1_c + ind_1++];
+                }
+                else if (mtrx_1->ja[prev_1_c + ind_1] > mtrx_2->ja[prev_2_c + ind_2])
+                {
+                    res_mtrx->ja[ind] = mtrx_2->ja[prev_2_c + ind_2];
+                    res_mtrx->ja[ind++] = mtrx_2->a[prev_2_c + ind_2++];
+                }
+                else
+                {
+                    res_mtrx->ja[ind] = mtrx_2->ja[prev_2_c + ind_2] + mtrx_1->ja[prev_1_c + ind_1++];
+                    res_mtrx->ja[ind++] = mtrx_2->a[prev_2_c + ind_2++];
+                }
+            }
+        }
+        else
+            res_mtrx->ia[i] = -1;
+
+        prev_1_c += m_1_c;
+        prev_2_c += m_2_c;
+    }
+
+    res_mtrx->count = ind;
 }
 
 
@@ -194,7 +333,26 @@ void print_matrix(int **p_mtrx, int n, int m)
         if (!(n > MAX_P_LEN || m > MAX_P_LEN))
             printf("\n");
     }
-        
+}
+
+
+void print_spec_matrix(spar_mtrx_t *mtrx, int n)
+{
+    printf(SPEC_TABLE_MSG);
+    
+    for (int i = 0; i < (mtrx->count < n) ? n : mtrx->count; ++i)
+    {
+        if (i < mtrx->count)
+            printf("|%*d|%*d|", FIELD_WIDTH - 1, mtrx->a[i], FIELD_WIDTH,
+                mtrx->ja[i]);
+        if (i < n && i >= mtrx->count)
+            printf("|%*c|%*c|%*d|\n", FIELD_WIDTH - 1, ' ',
+                FIELD_WIDTH, ' ', FIELD_WIDTH, mtrx->ia[i]);
+        else if (i < n)
+            printf("%*d|\n", FIELD_WIDTH, mtrx->ia[i]);
+        else
+            printf("\n");
+    }
 }
 
 
@@ -207,61 +365,11 @@ void free_matrix(int **data, int n)
 }
 
 
-int matrix_addition_and_print(int **mtrx_1, int **mtrx_2, int n, int m)
-{
-    int **buf_mtrx = allocate_matrix(n, m);
-    if (!buf_mtrx)
-        return ERR_ALLOC;
-
-
-    for (int i = 0; i < n; ++i)
-        for (int j = 0; j < m; ++j)
-            buf_mtrx[i][j] = mtrx_1[i][j] + mtrx_2[i][j];
-
-    print_matrix(buf_mtrx, n, m);
-
-    free_matrix(buf_mtrx, 1);
-
-    return SUCCESS;
-}
-
-
 void free_spec_matrix(spar_mtrx_t *mtrx)
 {
     free(mtrx->a);
     free(mtrx->ja);
     free(mtrx->ia);
-}
-
-
-int matrix_spec_addition_and_print(spar_mtrx_t *mtrx_1, spar_mtrx_t *mtrx_2, int n, int m)
-{
-    spar_mtrx_t buf_mtrx;
-    buf_mtrx.a = NULL, buf_mtrx.ja = NULL, buf_mtrx.ia = NULL;
-
-    if (allocate_spec_matrix(&buf_mtrx, n, m))
-        return ERR_ALLOC;
-
-    int ind = 0;
-
-
-    for (int i = 0; i < n; ++i)
-    {
-        if (mtrx_1->ia[i] == -1 && mtrx_2->ia[i] > 0 ||
-            mtrx_1->ia[i] > 0 && mtrx_2->ia[i] == -1)
-            for (int j = 0; j < m, ++j)
-            {
-                
-            }
-
-    }
-            
-
-    print_matrix(buf_mtrx, n, m);
-
-    free_spec_matrix(&buf_mtrx);
-
-    return SUCCESS;
 }
 
 
@@ -283,6 +391,9 @@ int main(void)
     int **p_mtrx_2 = NULL;
     int n_1 = 0, m_1 = 0;
     int n_2 = 0, m_2 = 0;
+
+    int count_nonzero_1 = 0;
+    int count_nonzero_2 = 0;
 
 
     printf(INFO_MSG);
@@ -315,31 +426,32 @@ int main(void)
             return ERR_DATA;
         }
 
-        if (allocate_spec_matrix(&a_1, n_1, m_1))
-        {
-            printf(ERR_ALLOC_MSG);
-            fclose(f_1);
-            return ERR_ALLOC;
-        }
-
         p_mtrx_1 = allocate_matrix(n_1, m_1);
 
         if (!p_mtrx_1)
         {
             printf(ERR_ALLOC_MSG);
             fclose(f_1);
-            free_spec_matrix(&a_1);
             return ERR_ALLOC;
         }
 
-        if (read_matrix(f_1, p_mtrx_1, n_1, m_1))
+        if (read_matrix(f_1, p_mtrx_1, n_1, m_1, &count_nonzero_1))
         {
             printf(ERR_READING_MSG);
             fclose(f_1);
-            free_spec_matrix(&a_1);
             free_matrix(p_mtrx_1, 1);
             return ERR_DATA;
         }
+
+        if (allocate_spec_matrix(&a_1, n_1, count_nonzero_1))
+        {
+            printf(ERR_ALLOC_MSG);
+            fclose(f_1);
+            free_matrix(p_mtrx_1, 1);
+            return ERR_ALLOC;
+        }
+
+        a_1.count = count_nonzero_1;
 
         read_spec_matrix(p_mtrx_1, &a_1, n_1, m_1);
     }
@@ -374,16 +486,6 @@ int main(void)
             return ERR_DATA;
         }
 
-        if (allocate_spec_matrix(&a_2, n_2, m_2))
-        {
-            printf(ERR_ALLOC_MSG);
-            fclose(f_1);
-            fclose(f_2);
-            free_spec_matrix(&a_1);
-            free_matrix(p_mtrx_1, 1);
-            return ERR_ALLOC;
-        }
-
         p_mtrx_2 = allocate_matrix(n_2, m_2);
 
         if (!p_mtrx_2)
@@ -392,22 +494,33 @@ int main(void)
             fclose(f_1);
             fclose(f_2);
             free_spec_matrix(&a_1);
-            free_spec_matrix(&a_2);
             free_matrix(p_mtrx_1, 1);
             return ERR_ALLOC;
         }
 
-        if (read_matrix(f_2, p_mtrx_2, n_2, m_2))
+        if (read_matrix(f_2, p_mtrx_2, n_2, m_2, &count_nonzero_2))
         {
             printf(ERR_READING_MSG);
             fclose(f_1);
             fclose(f_2);
             free_spec_matrix(&a_1);
-            free_spec_matrix(&a_2);
             free_matrix(p_mtrx_1, 1);
             free_matrix(p_mtrx_2, 1);
             return ERR_DATA;
         }
+
+        if (allocate_spec_matrix(&a_2, n_2, count_nonzero_2))
+        {
+            printf(ERR_ALLOC_MSG);
+            fclose(f_1);
+            fclose(f_2);
+            free_spec_matrix(&a_1);
+            free_matrix(p_mtrx_1, 1);
+            free_matrix(p_mtrx_2, 1);
+            return ERR_ALLOC;
+        }
+
+        a_2.count = count_nonzero_2;
 
         read_spec_matrix(p_mtrx_2, &a_2, n_2, m_2);
     }
@@ -486,12 +599,6 @@ int main(void)
                             break;
                         }
 
-                        if (allocate_spec_matrix(&a_1, n_1, m_1))
-                        {
-                            printf(ERR_ALLOC_MSG);
-                            break;
-                        }
-
                         p_mtrx_1 = allocate_matrix(n_1, m_1);
                         
                         if (!p_mtrx_1)
@@ -502,11 +609,19 @@ int main(void)
 
                         printf(INPUT_ELEMS_MSG);
 
-                        if (read_matrix(stdin, p_mtrx_1, n_1, m_1))
+                        if (read_matrix(stdin, p_mtrx_1, n_1, m_1, &count_nonzero_1))
                         {
                             printf(ERR_READING_STDIN_MSG);
                             break;
                         }
+
+                        if (allocate_spec_matrix(&a_1, n_1, count_nonzero_1))
+                        {
+                            printf(ERR_ALLOC_MSG);
+                            break;
+                        }
+
+                        a_1.count = count_nonzero_1;
 
                         read_spec_matrix(p_mtrx_1, &a_1, n_1, m_1);
                     }
@@ -524,12 +639,6 @@ int main(void)
                             break;
                         }
 
-                        if (allocate_spec_matrix(&a_2, n_2, m_2))
-                        {
-                            printf(ERR_ALLOC_MSG);
-                            break;
-                        }
-
                         p_mtrx_2 = allocate_matrix(n_2, m_2);
                         
                         if (!p_mtrx_2)
@@ -540,11 +649,19 @@ int main(void)
 
                         printf(INPUT_ELEMS_MSG);
 
-                        if (read_matrix(stdin, p_mtrx_2, n_2, m_2))
+                        if (read_matrix(stdin, p_mtrx_2, n_2, m_2, &count_nonzero_2))
                         {
                             printf(ERR_READING_STDIN_MSG);
                             break;
                         }
+
+                        if (allocate_spec_matrix(&a_2, n_2, count_nonzero_2))
+                        {
+                            printf(ERR_ALLOC_MSG);
+                            break;
+                        }
+
+                        a_2.count = count_nonzero_2;
 
                         read_spec_matrix(p_mtrx_2, &a_2, n_2, m_2);                                                
                     }
@@ -572,11 +689,20 @@ int main(void)
                     break;
                 }
 
-                if (matrix_addition_and_print(p_mtrx_1, p_mtrx_2, n_1, m_1))
+                int **res_mtrx = allocate_matrix(n_1, m_1);
+
+
+                if (!res_mtrx)
                 {
                     printf(ERR_ALLOC_MSG);
                     break;
                 }
+
+                matrix_addition(p_mtrx_1, p_mtrx_2, res_mtrx, n_1, m_1);
+
+                print_matrix(res_mtrx, n_1, m_1);
+
+                free_matrix(res_mtrx, 1);
                 
                 break;
             }
@@ -594,11 +720,21 @@ int main(void)
                     break;
                 }
 
-                if (matrix_spec_addition_and_print(p_mtrx_1, p_mtrx_2, n_1, m_1))
+                spar_mtrx_t res_spec_mtrx;
+                res_spec_mtrx.a = NULL, res_spec_mtrx.ja = NULL, res_spec_mtrx.ia = NULL;
+
+
+                if (allocate_spec_matrix(&res_spec_mtrx, n_1, a_1.count + a_2.count))
                 {
                     printf(ERR_ALLOC_MSG);
                     break;
                 }
+
+                matrix_spec_addition(&a_1, &a_2, &res_spec_mtrx, n_1, m_1);
+
+                print_spec_matrix(&res_spec_mtrx, n_1);
+
+                free_spec_matrix(&res_spec_mtrx);
                 
                 break;
             }
