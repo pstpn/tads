@@ -2,12 +2,11 @@
 #define ___MY_ERR___
 
 #define SUCCESS 0
-#define UNKNOWN_FILE 1
-#define EMPTY_STR 2
-#define OVERFLOW 3
-#define INCORRECT_DATA 4
-#define INCORRECT_CODE 5
-#define INCORRECT_MODEL 6
-#define INCORRECT_PRICE 7
+#define ERR_FILE 1
+#define ERR_DATA 2
+#define ERR_GET_SIZE 3
+#define ERR_READING 4
+#define ERR_ALLOC 5
+#define ERR_CODE 6
 
 #endif // ___MY_ERR___

@@ -1,39 +1,29 @@
 #ifndef ___MY_DEF___
 #define ___MY_DEF___
 
-#define MODEL_LEN 11
-#define COUNTRY_LEN 15
-#define COLOR_LEN 11
-#define CONDITION_LEN 11
 #define FILENAME_LEN 20
-#define RECORDS_COUNT 20000
-#define PRICE_LEN 11
-#define YEAR_LEN 6
-#define MIL_LEN 9
-#define REP_LEN 9
-#define OWN_LEN 8
-#define GUAR_LEN 11
-#define INDEX_LEN 17
-#define NUM_LEN 17
-#define SLOW_LEN 16
-#define QUICK_LEN 17
-#define TIME_MEM_LEN 8
-#define TABLE_WIDTH 113
-#define KEY_TABLE_WIDTH 49
-#define MEASURE_TABLE_WIDTH 79
-#define MAX_PRICE 99999999
-#define MAX_GUAR 99
-#define MAX_YEAR 2022
-#define MAX_MIL 999999
-#define MAX_REP 99
-#define MAX_OWN 99
+#define MENU_LEN 5
+#define INDENT 2
+#define BIG_INDENT 5
+#define MAX_P_LEN 20
 #define TRUE 1
 #define FALSE 0
-#define MENU_LEN 11
-#define COUNT_MEAS 4
+#define FIELD_WIDTH 8
+#define OUT_TABLE_WIDTH 27
+#define COUNT_MEAS 10
+#define COUNT_SIZES 4
+#define MEAS_LEN 100
 
-#define SEP ';'
-#define NEW_SEP '\n'
-#define EMPTY ' '
+#define MEAS_TABLE_WIDTH 82
+#define TYPE_LEN 16
+#define SIZE_LEN 16
+#define FILL_LEN 10
+#define MEMORY_LEN 20
+#define TIME_LEN 15
+
+#define FIRST_FILE "m_1.txt"
+#define SECOND_FILE "m_2.txt"
+#define SPEC_TYPE "SPARES"
+#define COMMON_TYPE "ORDINARY"
 
 #endif // ___MY_DEF___

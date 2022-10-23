@@ -1,7 +1,8 @@
 from random import randint
+from sys import argv
 
 
-def generate_and_write():
+def generate_and_write(filename, n, m, zero_count):
     mtrx = [[randint(1, 7777) for j in range(m)] for i in range(n)]
             
     inds = {}
@@ -34,15 +35,18 @@ def generate_and_write():
                     
 
 if __name__ == "__main__":
-    n, m = list(map(int, input("Введите кол-во строк и столбцов через пробел: ").split()))
-
-    percent = float(input("Введите процент заполнения матрицы: "))
-    zero_count = n * m - int(n * m * (percent / 100))
-
-    filename = input("Введите имя файла, в который сохранить матрицу: ")
-    if filename == "y":
-        filename = "m_1.txt"
-    if filename == "g":
-        filename = "m_2.txt"
     
-    generate_and_write()
+    filename_1 = argv[1]
+    filename_2 = argv[5]
+    
+    filling_1 = int(argv[4])
+    filling_2 = int(argv[8])
+    
+    n_1, m_1 = int(argv[2]), int(argv[3])
+    n_2, m_2 = int(argv[6]), int(argv[7])
+    
+    zero_c_1 = n_1 * m_1 - int(n_1 * m_1 * (filling_1 / 100))
+    zero_c_2 = n_2 * m_2 - int(n_2 * m_2 * (filling_2 / 100))
+    
+    generate_and_write(filename_1, n_1, m_1, zero_c_1)
+    generate_and_write(filename_2, n_2, m_2, zero_c_2)

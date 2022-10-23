@@ -5,6 +5,6 @@
 
 
 unsigned long long milliseconds_now(void);
-void get_measures(measurement_table table[], car_info cars[], help_table inds[], int count);
+int get_measures(measurement_table table[]);
 
 #endif // ___MY_MEAS___
