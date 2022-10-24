@@ -41,8 +41,8 @@ int get_measures(measurement_table table[MEAS_LEN])
     int n_1 = 0, m_1 = 0;
     int n_2 = 0, m_2 = 0;
 
-    int count_nonzero_1 = 0;
-    int count_nonzero_2 = 0;
+    int count_nonzero_1;
+    int count_nonzero_2;
 
     int num = 0;
 
@@ -53,6 +53,9 @@ int get_measures(measurement_table table[MEAS_LEN])
         for (int j = 0; j < COUNT_SIZES; ++j)
         {
             char *f_str;
+
+            count_nonzero_1 = 0;
+            count_nonzero_2 = 0;
 
 
             asprintf(&f_str, "python3 generate_matrix.py m_1.txt %d %d %d m_2.txt %d %d %d",

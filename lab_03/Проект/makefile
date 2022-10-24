@@ -20,7 +20,10 @@ $(OBJ_FOLDER)%.o : */%.c $(INC_FOLDER)*.h
 	mkdir -p out/
 	$(CC) $(CFLAGS) -c $< -o $@
 
-.PHONY: debug release clean
+.PHONY: debug release clean gen
 
 clean :
 	- rm *.txt *.exe 
+
+gen :
+	python3 generate_matrix.py m_1.txt 40 40 50 m_2.txt 40 40 50
