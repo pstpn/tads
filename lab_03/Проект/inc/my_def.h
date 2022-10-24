@@ -21,8 +21,8 @@
 #define MEMORY_LEN 20
 #define TIME_LEN 15
 
-#define FIRST_FILE "m_1.txt"
-#define SECOND_FILE "m_2.txt"
+#define FIRST_FILE "data_1.txt"
+#define SECOND_FILE "data_2.txt"
 #define SPEC_TYPE "SPARES"
 #define COMMON_TYPE "ORDINARY"
 

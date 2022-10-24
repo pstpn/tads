@@ -58,8 +58,9 @@ int get_measures(measurement_table table[MEAS_LEN])
             count_nonzero_2 = 0;
 
 
-            asprintf(&f_str, "python3 generate_matrix.py m_1.txt %d %d %d m_2.txt %d %d %d",
-                sizes[j], sizes[j], filling[i], sizes[j], sizes[j], filling[i]);
+            asprintf(&f_str, "python3 generate_matrix.py %s %d %d %d %s %d %d %d",
+                FIRST_FILE, sizes[j], sizes[j], filling[i], 
+                SECOND_FILE, sizes[j], sizes[j], filling[i]);
 
             printf("%s\n", f_str);
             system(f_str);

@@ -263,7 +263,7 @@ int main(void)
                         if (get_size(stdin, &n_1, &m_1))
                         {
                             printf(ERR_GET_SIZES_MSG);
-                            break;
+                            return ERR_GET_SIZE;;
                         }
 
                         p_mtrx_1 = allocate_matrix(n_1, m_1);
@@ -271,7 +271,7 @@ int main(void)
                         if (!p_mtrx_1)
                         {
                             printf(ERR_ALLOC_MSG);
-                            break;
+                            return ERR_ALLOC;
                         }
 
                         printf(INPUT_ELEMS_MSG);
@@ -279,13 +279,13 @@ int main(void)
                         if (read_matrix(stdin, p_mtrx_1, n_1, m_1, &count_nonzero_1))
                         {
                             printf(ERR_READING_STDIN_MSG);
-                            break;
+                            return ERR_DATA;
                         }
 
                         if (allocate_spec_matrix(&a_1, n_1, count_nonzero_1))
                         {
                             printf(ERR_ALLOC_MSG);
-                            break;
+                            return ERR_ALLOC;
                         }
 
                         a_1.count = count_nonzero_1;
@@ -303,7 +303,7 @@ int main(void)
                         if (get_size(stdin, &n_2, &m_2))
                         {
                             printf(ERR_GET_SIZES_MSG);
-                            break;
+                            return ERR_GET_SIZE;
                         }
 
                         p_mtrx_2 = allocate_matrix(n_2, m_2);
@@ -311,7 +311,7 @@ int main(void)
                         if (!p_mtrx_2)
                         {
                             printf(ERR_ALLOC_MSG);
-                            break;
+                            return ERR_ALLOC;
                         }
 
                         printf(INPUT_ELEMS_MSG);
@@ -319,13 +319,13 @@ int main(void)
                         if (read_matrix(stdin, p_mtrx_2, n_2, m_2, &count_nonzero_2))
                         {
                             printf(ERR_READING_STDIN_MSG);
-                            break;
+                            return ERR_DATA;
                         }
 
                         if (allocate_spec_matrix(&a_2, n_2, count_nonzero_2))
                         {
                             printf(ERR_ALLOC_MSG);
-                            break;
+                            return ERR_ALLOC;
                         }
 
                         a_2.count = count_nonzero_2;
@@ -391,7 +391,7 @@ int main(void)
                 res_spec_mtrx.a = NULL, res_spec_mtrx.ja = NULL, res_spec_mtrx.ia = NULL;
 
 
-                if (allocate_spec_matrix(&res_spec_mtrx, n_1, a_1.count + a_2.count))
+                if (allocate_spec_matrix(&res_spec_mtrx, n_1, m_1))
                 {
                     printf(ERR_ALLOC_MSG);
                     break;

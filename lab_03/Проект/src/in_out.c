@@ -29,8 +29,9 @@ void read_spec_matrix(int **p_mtrx, spar_mtrx_t *mtrx, int n, int m)
             if (p_mtrx[i][j])
             {
                 mtrx->a[ind] = p_mtrx[i][j];
-                mtrx->ja[ind++] = j;
-                mtrx->ia[i] = (mtrx->ia[i] == -1) ? j : mtrx->ia[i];
+                mtrx->ja[ind] = j;
+                mtrx->ia[i] = (mtrx->ia[i] == -1) ? ind : mtrx->ia[i];
+                ++ind;
             }
 }
 
