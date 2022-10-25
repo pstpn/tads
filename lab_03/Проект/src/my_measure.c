@@ -29,21 +29,6 @@ int get_measures(measurement_table table[MEAS_LEN])
     int filling[COUNT_MEAS] = { 1, 5, 10, 15, 20, 30, 50, 70, 90, 100 };
     int sizes[COUNT_SIZES] = { 5, 50, 100, 500 };
 
-    spar_mtrx_t a_1;
-    spar_mtrx_t a_2;
-
-    a_1.a = NULL, a_2.a = NULL;
-    a_1.ja = NULL, a_2.ja = NULL;
-    a_1.ia = NULL, a_2.ia = NULL;
-
-    int **p_mtrx_1 = NULL;
-    int **p_mtrx_2 = NULL;
-    int n_1 = 0, m_1 = 0;
-    int n_2 = 0, m_2 = 0;
-
-    int count_nonzero_1;
-    int count_nonzero_2;
-
     int num = 0;
 
     long long unsigned beg, end, res, res_s;
@@ -52,10 +37,23 @@ int get_measures(measurement_table table[MEAS_LEN])
     for (int i = 0; i < COUNT_MEAS; ++i)
         for (int j = 0; j < COUNT_SIZES; ++j)
         {
-            char *f_str;
 
-            count_nonzero_1 = 0;
-            count_nonzero_2 = 0;
+            spar_mtrx_t a_1;
+            spar_mtrx_t a_2;
+
+            a_1.a = NULL, a_2.a = NULL;
+            a_1.ja = NULL, a_2.ja = NULL;
+            a_1.ia = NULL, a_2.ia = NULL;
+
+            int **p_mtrx_1 = NULL;
+            int **p_mtrx_2 = NULL;
+            int n_1 = 0, m_1 = 0;
+            int n_2 = 0, m_2 = 0;
+
+            int count_nonzero_1 = 0;
+            int count_nonzero_2 = 0;
+
+            char *f_str;
 
 
             asprintf(&f_str, "python3 generate_matrix.py %s %d %d %d %s %d %d %d",

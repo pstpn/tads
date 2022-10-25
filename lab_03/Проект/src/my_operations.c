@@ -21,9 +21,9 @@ void matrix_spec_addition(spar_mtrx_t *mtrx_1, spar_mtrx_t *mtrx_2, spar_mtrx_t 
 
     for (int i = 0; i < n; ++i)
     {
-        get_count_elems_in_str(mtrx_1, i, &m_1_c, res_mtrx->count, n);
+        get_count_elems_in_str(mtrx_1, i, &m_1_c, ind, n);
 
-        get_count_elems_in_str(mtrx_2, i, &m_2_c, res_mtrx->count, n);
+        get_count_elems_in_str(mtrx_2, i, &m_2_c, ind, n);
 
         if (m_1_c && !m_2_c)
         {
@@ -39,7 +39,7 @@ void matrix_spec_addition(spar_mtrx_t *mtrx_1, spar_mtrx_t *mtrx_2, spar_mtrx_t 
         {
             res_mtrx->ia[i] = ind;
 
-            for (int j = mtrx_2->ia[i]; j < mtrx_1->ia[i] + m_2_c; ++j)
+            for (int j = mtrx_2->ia[i]; j < mtrx_2->ia[i] + m_2_c; ++j)
             {
                 res_mtrx->a[ind] = mtrx_2->a[j];
                 res_mtrx->ja[ind++] = mtrx_2->ja[j];
