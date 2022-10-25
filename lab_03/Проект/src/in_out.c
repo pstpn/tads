@@ -54,6 +54,33 @@ int read_matrix(FILE *f, int **p_mtrx, int n, int m, int *count_nonzero)
 }
 
 
+int coord_read_matrix(FILE *f, int **p_mtrx, int n, int m, int *count_nonzero)
+{
+    int ind_i = -2, ind_j = -2;
+    int buf;
+    char ch;
+
+
+    while (ind_i != -1 && ind_j != -1)
+    {
+        printf(COORD_INPUT_ELEMS_MSG);
+        if (fscanf(f, "%d%d%d%c", &ind_i, &ind_j, &buf, &ch) != 4)
+            return ERR_READING;
+        if (ind_i == -1 && ind_j == -1 && buf == -1)
+            return SUCCESS;
+        else if (ind_i < 0 || ind_i >= n || ind_j < 0 || ind_j >= m)
+            return ERR_GET_SIZE;
+        else if (ch != '\n')
+            return ERR_READING;
+
+        p_mtrx[ind_i][ind_j] = buf;
+        
+        if (buf)
+            ++(*count_nonzero);
+    }
+}
+
+
 void print_matrix(int **p_mtrx, int n, int m)
 {
     printf("\n");

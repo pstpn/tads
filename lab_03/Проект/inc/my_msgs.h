@@ -27,8 +27,10 @@
 #define EMPTY_MATRIX_MSG "\nМатрица пустая. Заполните матрицу и попробуйте снова.\n\n"
 #define FILLED_MATRIX_MSG "\nМатрица непустая.\n\n"
 #define ENTER_SIZES_MSG "\nВведите размерность новой матрицы (в виде \"n m\"): "
+#define ENTER_TYPE_INPUT_MSG "\nВыберите способ ввода матрицы:\n1 -- По строкам\n2 -- Координатным методом\n: "
 #define FILLING_MATRIX_MSG "\nВыберите матрицу для заполнения:\n1 -- Первая матрица\n2 -- Вторая матрица\n: "
 #define INPUT_ELEMS_MSG "\nВведите элементы матрицы, разделяя их пробелом:\n\n"
+#define COORD_INPUT_ELEMS_MSG "\nВведите через пробел индекс строки, индекс столбца и элемент(\"i j elem\") или \"-1 -1 -1\", чтобы завершить ввод: "
 #define SPEC_TABLE_MSG "|   A   |   JA   |   IA   |\n"
 #define MEASURE_TABLE_MSG "|      TYPE      |      SIZE      | FILL (%%) |   MEMORY (Bytes)   |   TIME (mcs)  |\n"
 
