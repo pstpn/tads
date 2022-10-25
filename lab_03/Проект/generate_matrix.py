@@ -3,7 +3,7 @@ from sys import argv
 
 
 def generate_and_write(filename, n, m, zero_count):
-    mtrx = [[randint(1, 7777) for j in range(m)] for i in range(n)]
+    mtrx = [[randint(1, 100) for j in range(m)] for i in range(n)]
             
     inds = {}
             

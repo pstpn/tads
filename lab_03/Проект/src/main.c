@@ -391,7 +391,7 @@ int main(void)
                 res_spec_mtrx.a = NULL, res_spec_mtrx.ja = NULL, res_spec_mtrx.ia = NULL;
 
 
-                if (allocate_spec_matrix(&res_spec_mtrx, n_1, m_1))
+                if (allocate_spec_matrix(&res_spec_mtrx, n_1, a_1.count + a_2.count))
                 {
                     printf(ERR_ALLOC_MSG);
                     break;
