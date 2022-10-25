@@ -32,6 +32,6 @@
 #define INPUT_ELEMS_MSG "\nВведите элементы матрицы, разделяя их пробелом:\n\n"
 #define COORD_INPUT_ELEMS_MSG "\nВведите через пробел индекс строки, индекс столбца и элемент(\"i j elem\") или \"-1 -1 -1\", чтобы завершить ввод: "
 #define SPEC_TABLE_MSG "|   A   |   JA   |   IA   |\n"
-#define MEASURE_TABLE_MSG "|      TYPE      |      SIZE      | FILL (%%) |   MEMORY (Bytes)   |   TIME (mcs)  |\n"
+#define MEASURE_TABLE_MSG "|      TYPE      |   ELEMS COUNT  | FILL (%%) |   MEMORY (Bytes)   |   TIME (mcs)  |\n"
 
 #endif // ___MY_MSGS___

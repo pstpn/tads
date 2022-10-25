@@ -72,12 +72,16 @@ int coord_read_matrix(FILE *f, int **p_mtrx, int n, int m, int *count_nonzero)
             return ERR_GET_SIZE;
         else if (ch != '\n')
             return ERR_READING;
+        
+        if (buf && !p_mtrx[ind_i][ind_j])
+            ++(*count_nonzero);
+        else if (!buf && p_mtrx[ind_i][ind_j])
+            --(*count_nonzero);
 
         p_mtrx[ind_i][ind_j] = buf;
-        
-        if (buf)
-            ++(*count_nonzero);
     }
+
+    return SUCCESS;
 }
 
 

@@ -263,6 +263,7 @@ int main(void)
                         fscanf(stdin, "\n%c", &ans);
                         if (ans == '1')
                         {
+                            printf(ENTER_SIZES_MSG);
                             if (get_size(stdin, &n_1, &m_1))
                             {
                                 printf(ERR_GET_SIZES_MSG);
