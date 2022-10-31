@@ -273,7 +273,7 @@ int main(void)
                             if (n_2 && m_2 && (n_1 != n_2 || m_1 != m_2))
                             {
                                 printf(ERR_GET_SIZES_MSG);
-                                return ERR_GET_SIZE;
+                                break;
                             }
 
                             p_mtrx_1 = allocate_matrix(n_1, m_1);
@@ -311,10 +311,10 @@ int main(void)
                                 return ERR_GET_SIZE;
                             }
 
-                            if (n_1 && m_1 && (n_1 != n_2 || m_1 != m_2))
+                            if (n_2 && m_2 && (n_1 != n_2 || m_1 != m_2))
                             {
                                 printf(ERR_GET_SIZES_MSG);
-                                return ERR_GET_SIZE;
+                                break;
                             }
 
                             p_mtrx_1 = allocate_matrix(n_1, m_1);
@@ -362,6 +362,12 @@ int main(void)
                                 return ERR_GET_SIZE;
                             }
 
+                            if (n_1 && m_1 && (n_1 != n_2 || m_1 != m_2))
+                            {
+                                printf(ERR_GET_SIZES_MSG);
+                                break;
+                            }
+
                             p_mtrx_2 = allocate_matrix(n_2, m_2);
                             
                             if (!p_mtrx_2)
@@ -395,6 +401,12 @@ int main(void)
                             {
                                 printf(ERR_GET_SIZES_MSG);
                                 return ERR_GET_SIZE;
+                            }
+
+                            if (n_1 && m_1 && (n_1 != n_2 || m_1 != m_2))
+                            {
+                                printf(ERR_GET_SIZES_MSG);
+                                break;
                             }
 
                             p_mtrx_2 = allocate_matrix(n_2, m_2);
