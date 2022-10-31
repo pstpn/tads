@@ -14,9 +14,9 @@
 #define COUNT_SIZES 4
 #define MEAS_LEN 80
 
-#define MEAS_TABLE_WIDTH 82
+#define MEAS_TABLE_WIDTH 76
 #define TYPE_LEN 16
-#define SIZE_LEN 16
+#define SIZE_LEN 10
 #define FILL_LEN 10
 #define MEMORY_LEN 20
 #define TIME_LEN 15

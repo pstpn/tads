@@ -148,7 +148,7 @@ void print_measures(measurement_table table[], int count)
     for (int i = 0; i < count; ++i)
         printf("|%-*s|%-*d|%-*d|%-*d|%-*lld|\n", TYPE_LEN,
             (table[i].mtrx_type == 'c') ? COMMON_TYPE : SPEC_TYPE,
-            SIZE_LEN, table[i].m * table[i].n, FILL_LEN, table[i].fill,
+            SIZE_LEN, table[i].m, FILL_LEN, table[i].fill,
             MEMORY_LEN, table[i].mem, TIME_LEN, table[i].time);
     
     draw_line(MEAS_TABLE_WIDTH);

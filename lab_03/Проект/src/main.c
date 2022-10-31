@@ -267,7 +267,13 @@ int main(void)
                             if (get_size(stdin, &n_1, &m_1))
                             {
                                 printf(ERR_GET_SIZES_MSG);
-                                return ERR_GET_SIZE;;
+                                return ERR_GET_SIZE;
+                            }
+
+                            if (n_2 && m_2 && (n_1 != n_2 || m_1 != m_2))
+                            {
+                                printf(ERR_GET_SIZES_MSG);
+                                return ERR_GET_SIZE;
                             }
 
                             p_mtrx_1 = allocate_matrix(n_1, m_1);
@@ -300,6 +306,12 @@ int main(void)
                         {
                             printf(ENTER_SIZES_MSG);
                             if (get_size(stdin, &n_1, &m_1))
+                            {
+                                printf(ERR_GET_SIZES_MSG);
+                                return ERR_GET_SIZE;
+                            }
+
+                            if (n_1 && m_1 && (n_1 != n_2 || m_1 != m_2))
                             {
                                 printf(ERR_GET_SIZES_MSG);
                                 return ERR_GET_SIZE;

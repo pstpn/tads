@@ -27,7 +27,7 @@ unsigned long long microseconds_now(void)
 int get_measures(measurement_table table[MEAS_LEN])
 {
     int filling[COUNT_MEAS] = { 5, 8, 10, 12, 15, 20, 30, 50, 90, 100 };
-    int sizes[COUNT_SIZES] = { 15, 50, 70, 100 };
+    int sizes[COUNT_SIZES] = { 30, 50, 70, 100 };
 
     int num = 0;
 

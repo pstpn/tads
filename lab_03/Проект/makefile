@@ -26,4 +26,4 @@ clean :
 	- rm *.txt *.exe 
 
 gen :
-	python3 generate_matrix.py m_1.txt 10 10 10 m_2.txt 10 10 10
+	python3 generate_matrix.py m_1.txt 5 5 20 m_2.txt 5 5 20
