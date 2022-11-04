@@ -79,7 +79,7 @@ int get_postfix_expression_list_stack(char *in_expr, int len, list_stack_t *stac
             if (!stack->len)
                 return ERR_EXPRESSION;
 
-            --stack->len;
+            pop_list_stack(stack, &pop_elem);
         }
         else if (in_expr[i] == '+' || in_expr[i] == '-')
         {
@@ -115,6 +115,9 @@ int get_postfix_expression_list_stack(char *in_expr, int len, list_stack_t *stac
     while (stack->len)
     {
         pop_list_stack(stack, &pop_elem);
+        if (pop_elem == '(')
+            return ERR_EXPRESSION;
+            
         out_expr[ind_str++] = pop_elem;
     }
 

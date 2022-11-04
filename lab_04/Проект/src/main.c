@@ -22,6 +22,7 @@
 #include "../inc/list_stack_funcs.h"
 #include "../inc/operations.h"
 #include "../inc/in_out.h"
+#include "../inc/my_measure.h"
 #include "../inc/my_types.h"
 #include "../inc/my_msgs.h"
 #include "../inc/my_err.h"
@@ -176,7 +177,6 @@ int main(void)
                     {
                         printf(ERR_EXPR_MSG, RED, RESET);
                         destroy_arr_stack(cur_arr_stack);
-                        clear_buf(stdin);
                         break;
                     }
 
@@ -212,7 +212,6 @@ int main(void)
                     {
                         printf(ERR_EXPR_MSG, RED, RESET);
                         destroy_list_stack(cur_list_stack);
-                        clear_buf(stdin);
                         break;
                     }
 
@@ -230,16 +229,16 @@ int main(void)
             }
             case 5:
             {
-                // measurement_table measures[MEAS_LEN] = { 0 };
+                measurement_table measures[MEAS_LEN * 2] = { 0 };
 
 
-                // if (get_measures(measures))
-                // {
-                //     printf(ERR_MEASURES_MSG, RED, RESET);
-                //     break;
-                // }
+                if (get_measures(measures))
+                {
+                    printf(ERR_MEASURES_MSG, RED, RESET);
+                    break;
+                }
 
-                // print_measures(measures, MEAS_LEN);
+                print_measures(measures, MEAS_LEN * 2);
 
                 break;
             }

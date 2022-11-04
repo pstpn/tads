@@ -10,5 +10,6 @@ int get_in_expression(char *in_str, size_t n, int *len);
 void clear_buf(FILE *f);
 void draw_line(int len);
 void print_stacks(list_stack_t *list_stack, arr_stack_t *arr_stack);
+void print_measures(measurement_table *table, int len);
 
 #endif // ___IN_OUT___

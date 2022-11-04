@@ -64,22 +64,37 @@ void draw_line(int len)
 
 void print_stacks(list_stack_t *list_stack, arr_stack_t *arr_stack)
 {
-    draw_line(STACKS_TABLE_LEN);
+    draw_line(STACKS_TABLE_WIDTH);
     printf(STACKS_TABLE_MSG, PURPLE, RESET, BLUE, RESET);
-    draw_line(STACKS_TABLE_LEN);
+    draw_line(STACKS_TABLE_WIDTH);
 
     node_t *cur = list_stack->top;
 
 
     for (int i = list_stack->len - 1; i >= 0; --i)
     {
-        printf("|%s|%*c|%*p|%s|%s|%*c|%*p|%s|\n", PURPLE, FIRST_FIELD_LEN,
-        arr_stack->content[i], SECOND_FIELD_LEN, &(arr_stack->content[i]),
-        RESET, BLUE, THIRD_FIELD_LEN, cur->item, SECOND_FIELD_LEN,
+        printf("|%s|%*c|%*p|%s|%s|%*c|%*p|%s|\n", PURPLE, FIRST_FIELD_WIDTH,
+        arr_stack->content[i], SECOND_FIELD_WIDTH, &(arr_stack->content[i]),
+        RESET, BLUE, THIRD_FIELD_WIDTH, cur->item, SECOND_FIELD_WIDTH,
         &(cur->item), RESET);
 
         cur = cur->next;
     }
 
-    draw_line(STACKS_TABLE_LEN);
+    draw_line(STACKS_TABLE_WIDTH);
+}
+
+
+void print_measures(measurement_table *table, int len)
+{
+    draw_line(MEAS_TABLE_WIDTH);
+    printf(MEASURE_TABLE_MSG, BLUE, RESET);
+    draw_line(MEAS_TABLE_WIDTH);
+
+    for (int i = 0; i < len; i += 2)
+        printf("|%*s|%*lld|%*lld|%*d|%*d|\n", FIRST_MEAS_FIELD_WIDTH, table[i].expr,
+        SECOND_MEAS_FIELD_WIDTH, table[i].time, SECOND_MEAS_FIELD_WIDTH, table[i + 1].time,
+        THIRD_MEAS_FIELD_WIDTH, table[i].mem, THIRD_MEAS_FIELD_WIDTH, table[i + 1].mem);
+    
+    draw_line(MEAS_TABLE_WIDTH);
 }

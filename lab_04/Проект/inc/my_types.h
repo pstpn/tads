@@ -24,4 +24,11 @@ typedef struct
     int len;
 } list_stack_t;
 
+typedef struct measure
+{
+    long long unsigned time;
+    int mem;
+    char expr[EXPR_LEN + 1];
+} measurement_table;
+
 #endif // ___MY_TYPES___
