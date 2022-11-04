@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 #include "../inc/my_types.h"
 #include "../inc/my_def.h"
@@ -13,24 +14,9 @@ list_stack_t *create_list_stack(void)
 
 
     if (s)
-    {
-        s->top->next = NULL;
         s->len = 0;
-    }
 
     return s;
-}
-
-
-void destroy_list_stack(list_stack_t *s)
-{
-    int item;
-
-
-    while (!is_empty(s))
-        pop(s, &item);
-
-    free(s);
 }
 
 
@@ -54,7 +40,7 @@ int push_list_stack(list_stack_t *s, char elem)
         return ERR_ALLOC;
 
     if (is_list_stack_full(s))
-        return OVERFLOW;
+        return ERR_OVERFLOW;
 
     node->next = s->top;
     node->item = elem;
@@ -69,7 +55,7 @@ int push_list_stack(list_stack_t *s, char elem)
 
 int pop_list_stack(list_stack_t *s, char *pop_elem)
 {
-    if (is_empty(s))
+    if (is_list_stack_empty(s))
         return EMPTY_STACK;
 
     node_t *node;
@@ -86,4 +72,16 @@ int pop_list_stack(list_stack_t *s, char *pop_elem)
     free(node);
 
     return SUCCESS;
+}
+
+
+void destroy_list_stack(list_stack_t *s)
+{
+    char item;
+
+
+    while (!is_list_stack_empty(s))
+        pop_list_stack(s, &item);
+
+    free(s);
 }

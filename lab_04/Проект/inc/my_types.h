@@ -10,11 +10,13 @@ typedef struct
     int len;
 } arr_stack_t;
 
-typedef struct
+typedef struct node node_t;
+
+struct node
 {
     char item;
     node_t *next;
-} node_t;
+};
 
 typedef struct
 {

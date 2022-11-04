@@ -1,4 +1,6 @@
 #include <stdbool.h>
+#include <string.h>
+#include <stdlib.h>
 
 #include "../inc/my_types.h"
 #include "../inc/my_err.h"
@@ -9,7 +11,10 @@ arr_stack_t *create_arr_stack(void)
     arr_stack_t *s = malloc(sizeof(arr_stack_t));
 
     if (s)
+    {
+        memset(s->content, '0', STACK_SIZE);
         s->len = 0;
+    }
 
     return s;
 }
@@ -36,7 +41,7 @@ bool is_arr_stack_full(const arr_stack_t *s)
 int push_arr_stack(arr_stack_t *s, char elem)
 {
     if (is_arr_stack_full(s))
-        return OVERFLOW;
+        return ERR_OVERFLOW;
 
     s->content[(s->len)++] = elem;
 
