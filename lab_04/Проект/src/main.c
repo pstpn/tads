@@ -72,7 +72,7 @@ int main(void)
             }
             case 1:
             {
-                
+                print_stacks(list_stack, arr_stack);
                 
                 break;
             }

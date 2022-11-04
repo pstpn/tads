@@ -13,9 +13,15 @@
 #define MIN_ASCII_SMALL 97
 #define MAX_ASCII_SMALL 122
 
+#define STACKS_TABLE_LEN 73
+#define FIRST_FIELD_LEN 15
+#define SECOND_FIELD_LEN 18
+#define THIRD_FIELD_LEN 13
+
 #define RESET "\033[0m"
 #define RED "\033[1;31m"
 #define GREEN "\033[1;32m"
-#define WHITE "\033[1;37m"
+#define PURPLE "\033[1;35m"
+#define BLUE "\033[1;36m"
 
 #endif // ___MY_DEF___
