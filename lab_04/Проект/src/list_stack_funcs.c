@@ -85,3 +85,26 @@ void destroy_list_stack(list_stack_t *s)
 
     free(s);
 }
+
+
+void del_dublicates(list_stack_t *list_stack, p_node_t *p_nodes)
+{
+    for (int i = p_nodes->len; i >= 0; --i)
+    {
+        node_t *cur = list_stack->top;
+
+
+        for (int j = 0; j < list_stack->len; ++j, cur = cur->next)
+        {
+            if (cur == p_nodes->p_nodes[i])
+            {
+                for (int k = i; k < p_nodes->len - 1; ++k)
+                    p_nodes->p_nodes[k] = p_nodes->p_nodes[k + 1];
+                
+                --p_nodes->len;
+            }
+
+            break;
+        }
+    }
+}

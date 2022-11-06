@@ -12,5 +12,6 @@ bool is_list_stack_full(const list_stack_t *s);
 int push_list_stack(list_stack_t *s, char elem);
 int pop_list_stack(list_stack_t *s, char *pop_elem);
 void destroy_list_stack(list_stack_t *s);
+void del_dublicates(list_stack_t *list_stack, p_node_t *p_nodes);
 
 #endif // ___LIST_STACK_FUNCS___

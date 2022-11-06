@@ -117,7 +117,7 @@ int main(void)
                 push_arr_stack(arr_stack, elem);
 
                 if (p_nodes.len)
-                    --p_nodes.len;
+                    del_dublicates(list_stack, &p_nodes);
 
                 printf(SUCCESSFULLY_ADD_MSG, GREEN, RESET);
 
