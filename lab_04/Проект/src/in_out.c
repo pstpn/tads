@@ -62,7 +62,7 @@ void draw_line(int len)
 }
 
 
-void print_stacks(list_stack_t *list_stack, arr_stack_t *arr_stack)
+void print_stacks(list_stack_t *list_stack, arr_stack_t *arr_stack, p_node_t *p_nodes)
 {
     draw_line(STACKS_TABLE_WIDTH);
     printf(STACKS_TABLE_MSG, PURPLE, RESET, BLUE, RESET);
@@ -71,14 +71,30 @@ void print_stacks(list_stack_t *list_stack, arr_stack_t *arr_stack)
     node_t *cur = list_stack->top;
 
 
-    for (int i = list_stack->len - 1; i >= 0; --i)
+    for (int i = list_stack->len - 1, j = p_nodes->len - 1; i >= 0 || j >= 0; --i, --j)
     {
-        printf("|%s|%*c|%*p|%s|%s|%*c|%*p|%s|\n", PURPLE, FIRST_FIELD_WIDTH,
-        arr_stack->content[i], SECOND_FIELD_WIDTH, &(arr_stack->content[i]),
-        RESET, BLUE, THIRD_FIELD_WIDTH, cur->item, SECOND_FIELD_WIDTH,
-        &(cur->item), RESET);
+        if (j >= 0 && i >= 0)
+        {
+            printf("|%s|%*c|%*p|%s|%s|%*c|%*p|%*p|%s|\n", PURPLE, FIRST_FIELD_WIDTH,
+            arr_stack->content[i], SECOND_FIELD_WIDTH, &(arr_stack->content[i]),
+            RESET, BLUE, FIRST_FIELD_WIDTH, cur->item, SECOND_FIELD_WIDTH,
+            &(cur->item), THIRD_FIELD_WIDTH, (void *) p_nodes->p_nodes[j], RESET);
 
-        cur = cur->next;
+            cur = cur->next;
+        }
+        else if (j >= 0 && i < 0)
+            printf("|%s|%*c|%*c|%s|%s|%*c|%*c|%*p|%s|\n", PURPLE, FIRST_FIELD_WIDTH,
+            ' ', SECOND_FIELD_WIDTH, ' ', RESET, BLUE, FIRST_FIELD_WIDTH, ' ',
+            SECOND_FIELD_WIDTH, ' ', THIRD_FIELD_WIDTH, (void *) p_nodes->p_nodes[j], RESET);
+        else
+        {
+            printf("|%s|%*c|%*p|%s|%s|%*c|%*p|%*c|%s|\n", PURPLE, FIRST_FIELD_WIDTH,
+            arr_stack->content[i], SECOND_FIELD_WIDTH, &(arr_stack->content[i]),
+            RESET, BLUE, FIRST_FIELD_WIDTH, cur->item, SECOND_FIELD_WIDTH,
+            &(cur->item), THIRD_FIELD_WIDTH, ' ', RESET);
+
+            cur = cur->next;
+        }
     }
 
     draw_line(STACKS_TABLE_WIDTH);

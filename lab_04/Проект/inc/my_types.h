@@ -24,6 +24,13 @@ typedef struct
     int len;
 } list_stack_t;
 
+typedef struct 
+{
+    node_t *p_nodes[STACK_SIZE];
+    int len;
+} p_node_t;
+
+
 typedef struct measure
 {
     long long unsigned time;

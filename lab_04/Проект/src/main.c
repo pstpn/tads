@@ -17,6 +17,7 @@
  */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "../inc/arr_stack_funcs.h"
 #include "../inc/list_stack_funcs.h"
@@ -47,6 +48,10 @@ int main(void)
         return ERR_ALLOC;
     }
 
+    p_node_t p_nodes;
+    memset(p_nodes.p_nodes, 0, STACK_SIZE * sizeof(node_t *));
+    p_nodes.len = 0;
+
 
     printf(INFO_MSG);
     
@@ -73,7 +78,7 @@ int main(void)
             }
             case 1:
             {
-                print_stacks(list_stack, arr_stack);
+                print_stacks(list_stack, arr_stack, &p_nodes);
                 
                 break;
             }
@@ -111,6 +116,9 @@ int main(void)
 
                 push_arr_stack(arr_stack, elem);
 
+                if (p_nodes.len)
+                    --p_nodes.len;
+
                 printf(SUCCESSFULLY_ADD_MSG, GREEN, RESET);
 
                 break;
@@ -130,6 +138,7 @@ int main(void)
 
                 print_del_ptrs(&(arr_stack->content[arr_stack->len - 1]), list_stack->top);
 
+                p_nodes.p_nodes[(p_nodes.len)++] = list_stack->top;
                 pop_list_stack(list_stack, &pop_elem);
                 pop_arr_stack(arr_stack, &pop_elem);
 
