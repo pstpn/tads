@@ -24,3 +24,4 @@ $(OBJ_FOLDER)%.o : */%.c $(INC_FOLDER)*.h
 
 clean :
 	- rm *.txt *.exe
+	- rm -rf ./out
