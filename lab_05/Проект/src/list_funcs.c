@@ -28,10 +28,7 @@ void push_list_queue(list_queue_t **s, node_t *new_node)
 
 
     if (!(*s)->top)
-    {
         (*s)->top = new_node;
-        ++(*s)->len;
-    }
     else
     {
         while (cur_node->next)
@@ -39,6 +36,8 @@ void push_list_queue(list_queue_t **s, node_t *new_node)
 
         cur_node->next = new_node;
     }
+
+    ++(*s)->len;
 }
 
 
@@ -64,8 +63,8 @@ void destroy_list_queue(list_queue_t *s)
     double item;
 
 
-    while (!is_list_queue_empty(s))
-        pop_list_queue(&s, &item);
+    while (s->len)
+        pop_list_queue(s, &item);
 
     free(s);
 }

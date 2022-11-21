@@ -23,7 +23,10 @@
 #include "../inc/my_msgs.h"
 #include "../inc/my_err.h"
 #include "../inc/list_funcs.h"
-#include "./inc/arr_funcs.h"
+#include "../inc/arr_funcs.h"
+#include "../inc/modeling.h"
+#include "../inc/in_out.h"
+#include "../inc/my_measure.h"
 
 
 int main(void)
@@ -154,19 +157,27 @@ int main(void)
                 char ans;
 
 
-                printf(INPUT_STACK_TYPE);
+                printf(INPUT_QUEUE_TYPE);
                 fscanf(stdin, "\n%c", &ans);
                 if (ans == '1')
                 {
                     clear_buf(stdin);
 
-                    // TO DO
+                    if (arr_modeling())
+                    {
+                        printf(ERR_ALLOC_MSG, RED, RESET);
+                        return ERR_ALLOC;
+                    }
                 }
                 else if (ans == '2')
                 {
                     clear_buf(stdin);
 
-                    // TO DO
+                    if (list_modeling())
+                    {
+                        printf(ERR_ALLOC_MSG, RED, RESET);
+                        return ERR_ALLOC;
+                    }
                 }
                 else
                 {
@@ -178,20 +189,18 @@ int main(void)
             }
             case 5:
             {
-                // TO DO
-
-                // measurement_table measures[MEAS_LEN * 2] = { 0 };
+                measurement_table measures[MEAS_COUNT] = { 0 };
 
 
-                // if (get_measures(measures))
-                // {
-                //     printf(ERR_MEASURES_MSG, RED, RESET);
-                //     break;
-                // }
+                if (get_measures(measures))
+                {
+                    printf(ERR_MEASURES_MSG, RED, RESET);
+                    return ERR_ALLOC;
+                }
 
-                // print_measures(measures, MEAS_LEN * 2);
+                print_measures(measures, MEAS_COUNT);
 
-                // break;
+                break;
             }
         }
     }

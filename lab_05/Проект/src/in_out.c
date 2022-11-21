@@ -20,7 +20,7 @@ int get_in_elem(FILE *f, double *elem)
 }
 
 
-void print_del_ptrs(char *arr_elem, node_t *del_node)
+void print_del_ptrs(double *arr_elem, node_t *del_node)
 {
     printf(SUCCESSFULLY_DEL_MSG, GREEN, *arr_elem,
     (void *) arr_elem, (void *) del_node, RESET);
@@ -54,27 +54,27 @@ void print_queues(list_queue_t *list_queue, arr_queue_t *arr_queue, p_node_t *p_
     node_t *cur = list_queue->top;
 
 
-    for (int i = list_queue->len - 1, j = p_nodes->len - 1; i >= 0 || j >= 0; --i, --j)
+    for (int i = 0, j = p_nodes->len - 1; i < list_queue->len || j >= 0; ++i, --j)
     {
-        if (j >= 0 && i >= 0)
+        if (j >= 0 && i < list_queue->len)
         {
-            printf("|%s|%*c|%*p|%s|%s|%*c|%*p|%*p|%s|\n", PURPLE, FIRST_FIELD_WIDTH,
-            arr_queue->content[i], SECOND_FIELD_WIDTH, &(arr_queue->content[i]),
+            printf("|%s|%*lf|%*p|%s|%s|%*lf|%*p|%*p|%s|\n", PURPLE, FIRST_FIELD_WIDTH,
+            arr_queue->content[i], SECOND_FIELD_WIDTH, (void *) &(arr_queue->content[i]),
             RESET, BLUE, FIRST_FIELD_WIDTH, cur->item, SECOND_FIELD_WIDTH,
-            &(cur->item), THIRD_FIELD_WIDTH, (void *) p_nodes->p_nodes[j], RESET);
+            (void *) &(cur->item), THIRD_FIELD_WIDTH, (void *) p_nodes->p_nodes[j], RESET);
 
             cur = cur->next;
         }
-        else if (j >= 0 && i < 0)
+        else if (j >= 0 && i >= list_queue->len)
             printf("|%s|%*c|%*c|%s|%s|%*c|%*c|%*p|%s|\n", PURPLE, FIRST_FIELD_WIDTH,
             ' ', SECOND_FIELD_WIDTH, ' ', RESET, BLUE, FIRST_FIELD_WIDTH, ' ',
             SECOND_FIELD_WIDTH, ' ', THIRD_FIELD_WIDTH, (void *) p_nodes->p_nodes[j], RESET);
         else
         {
-            printf("|%s|%*c|%*p|%s|%s|%*c|%*p|%*c|%s|\n", PURPLE, FIRST_FIELD_WIDTH,
-            arr_queue->content[i], SECOND_FIELD_WIDTH, &(arr_queue->content[i]),
+            printf("|%s|%*lf|%*p|%s|%s|%*lf|%*p|%*c|%s|\n", PURPLE, FIRST_FIELD_WIDTH,
+            arr_queue->content[i], SECOND_FIELD_WIDTH, (void *) &(arr_queue->content[i]),
             RESET, BLUE, FIRST_FIELD_WIDTH, cur->item, SECOND_FIELD_WIDTH,
-            &(cur->item), THIRD_FIELD_WIDTH, ' ', RESET);
+            (void *) &(cur->item), THIRD_FIELD_WIDTH, ' ', RESET);
 
             cur = cur->next;
         }
@@ -84,16 +84,32 @@ void print_queues(list_queue_t *list_queue, arr_queue_t *arr_queue, p_node_t *p_
 }
 
 
-// void print_measures(measurement_table *table, int len)
-// {
-//     draw_line(MEAS_TABLE_WIDTH);
-//     printf(MEASURE_TABLE_MSG, BLUE, RESET);
-//     draw_line(MEAS_TABLE_WIDTH);
+void print_measures(measurement_table *table, int len)
+{
+    printf(ARR_QUEUE_MSG, PURPLE, RESET);
 
-//     for (int i = 0; i < len; i += 2)
-//         printf("|%*s|%*lld|%*lld|%*d|%*d|\n", FIRST_MEAS_FIELD_WIDTH, table[i].expr,
-//         SECOND_MEAS_FIELD_WIDTH, table[i].time, SECOND_MEAS_FIELD_WIDTH, table[i + 1].time,
-//         THIRD_MEAS_FIELD_WIDTH, table[i].mem, THIRD_MEAS_FIELD_WIDTH, table[i + 1].mem);
+    draw_line(MEAS_TABLE_WIDTH);
+    printf(MEASURE_TABLE_MSG, BLUE, RESET);
+    draw_line(MEAS_TABLE_WIDTH);
+
+    for (int i = 0; i < len / 2; i += 2)
+        printf("|%*d|%*llu|%*llu|%*d|\n", FIRST_SECOND_MEAS_FIELD_WIDTH, table[i].queue_len,
+        FIRST_SECOND_MEAS_FIELD_WIDTH, table[i].time, THIRD_MEAS_FIELD_WIDTH, table[i + 1].time,
+        FOURTH_MEAS_FIELD_WIDTH, table[i].mem);
     
-//     draw_line(MEAS_TABLE_WIDTH);
-// }
+    draw_line(MEAS_TABLE_WIDTH);
+
+
+    printf(LIST_QUEUE_MSG, PURPLE, RESET);
+
+    draw_line(MEAS_TABLE_WIDTH);
+    printf(MEASURE_TABLE_MSG, BLUE, RESET);
+    draw_line(MEAS_TABLE_WIDTH);
+
+    for (int i = len / 2; i < len; i += 2)
+        printf("|%*d|%*llu|%*llu|%*d|\n", FIRST_SECOND_MEAS_FIELD_WIDTH, table[i].queue_len,
+        FIRST_SECOND_MEAS_FIELD_WIDTH, table[i].time, THIRD_MEAS_FIELD_WIDTH, table[i + 1].time,
+        FOURTH_MEAS_FIELD_WIDTH, table[i].mem);
+    
+    draw_line(MEAS_TABLE_WIDTH);
+}

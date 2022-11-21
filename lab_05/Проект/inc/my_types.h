@@ -26,16 +26,16 @@ typedef struct
 
 typedef struct 
 {
-    node_t *p_nodes[QUEUE_SIZE];
+    node_t *p_nodes[MAX_QUEUE_SIZE];
     int len;
 } p_node_t;
 
 
-// typedef struct measure
-// {
-//     long long unsigned time;
-//     int mem;
-//     char expr[EXPR_LEN + 1];
-// } measurement_table;
+typedef struct measure
+{
+    long long unsigned time;
+    int mem;
+    int queue_len;
+} measurement_table;
 
 #endif // ___MY_TYPES___
