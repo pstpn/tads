@@ -6,7 +6,7 @@
 
 typedef struct
 {
-    double content[QUEUE_SIZE];
+    double content[MAX_QUEUE_SIZE];
     int len;
 } arr_queue_t;
 
