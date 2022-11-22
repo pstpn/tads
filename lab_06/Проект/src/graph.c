@@ -14,9 +14,13 @@ void to_dot(tree_node_t *tree, void *param)
 
     if (tree->left)
         fprintf(f, "%c%d -> %c%d;\n", tree->value, tree->index, tree->left->value, tree->left->index);
+    else
+        fprintf(f, "%c%d -> \"%d | %s\";\n", tree->value, tree->index, tree->index, NULL_STR);
 
     if (tree->right)
         fprintf(f, "%c%d -> %c%d;\n", tree->value, tree->index, tree->right->value, tree->right->index);
+    else
+        fprintf(f, "%c%d -> \"%d | %s\";\n", tree->value, tree->index, tree->index, NULL_STR);
 }
 
 

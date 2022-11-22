@@ -13,6 +13,8 @@
 #define POINTER_WIDTH 10
 #define CHILD_WIDTH 9
 
+#define NULL_STR "NULL"
+
 #define GRAPH_FILENAME "out.dot"
 #define OUT_GRAPH_FILENAME "out.png"
 
