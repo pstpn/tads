@@ -7,6 +7,7 @@
 #include "../inc/my_err.h"
 #include "../inc/tree_funcs.h"
 #include "../inc/graph.h"
+#include "../inc/in_out.h"
 
 
 unsigned long long microseconds_now(void)
@@ -33,9 +34,9 @@ tree_node_t *generate_tree(int count, int depth)
     root_node->right = NULL;
 
 
-    depth = (int) (count-- * ((double) depth / 100));
+    depth = (int) (count-- * ((double) depth / 100)) / 2;
 
-    for (; depth; --depth, --count, cur_head_node = cur_head_node->left)
+    for (; depth; --depth, count -= 2, cur_head_node = cur_head_node->left)
     {
         tree_node_t *cur_node_1 = calloc(1, sizeof(tree_node_t));
         
@@ -62,7 +63,7 @@ tree_node_t *generate_tree(int count, int depth)
 
     cur_head_node = (cur_head_node->left) ? cur_head_node->left : cur_head_node;
 
-    for (; count; --count, cur_head_node = cur_head_node->left)
+    for (; count > 0; --count, cur_head_node = cur_head_node->left)
     {
         tree_node_t *cur_node = calloc(1, sizeof(tree_node_t));
         
@@ -82,41 +83,33 @@ tree_node_t *generate_tree(int count, int depth)
 
 int get_measures(measurement_table table[MEAS_COUNT])
 {
-    int counts[] = { 12, 24, 48, 64, 100 };
+    int counts[] = { 1000, 10000, 25000, 50000, 100000 };
     int branching[] = { 0, 25, 50, 75, 100 };
-
-    table[0].time = 1;
     
-    // long long unsigned beg, end;
+    long long unsigned beg, end;
 
 
-    for (int i = 0; i < 1; ++i)
+    for (int i = 0; i < 5; ++i)
     {
-        for (int j = 0; j < 1; ++j)
+        for (int j = 0; j < 5; ++j)
         {
-            tree_node_t *root_node = generate_tree(counts[i], branching[j + 4]);
+            tree_node_t *root_node = generate_tree(counts[j], branching[i]);
 
-            // beg = microseconds_now();
+            int f_ind = counts[j];
 
 
-            FILE *f = fopen(TREE_GRAPH_FILENAME, "w");
-            
+            beg = microseconds_now();
 
-            export_to_dot(f, TREE_NAME, root_node, FALSE);
+            find_tree_node(root_node, &f_ind);
 
-            fclose(f);
+            end = microseconds_now();
 
-            system(MAKE_TREE_GRAPH_COMMAND);
-
-            system(OPEN_TREE_PNG_COMMAND);
-
-            // end = microseconds_now();
-
+            table[5 * i + j].time = (end - beg);
+            table[5 * i + j].branching = branching[i];
+            table[5 * i + j].mem = counts[j] * sizeof(tree_node_t);
             
             apply(root_node, destroy_node, NULL, FALSE, FALSE);
         }
-
-        ;
     }
     
     return SUCCESS;

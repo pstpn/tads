@@ -35,9 +35,9 @@
 4  --  Удаление узла из дерева\n\
 5  --  Поиск узла в дереве\n\
 6  --  Обход дерева и удаление из него всех файлов, последнее обращение к которым происходило до определенной даты\n\
-7  --  Сравнить эффективность алгоритма поиска в зависимости от высоты дерева и степени его ветвления\n\
+7  --  Сравнить эффективность алгоритма поиска в зависимости от степени его ветвления\n\
 0  --  Выход\n: "
-#define MEASURE_TABLE_MSG "\n| BRANCHING (%%) | TIME (10 elems, mcs) | TIME (25 elems, mcs) | \
-TIME (50 elems, mcs) | TIME (75 elems, mcs) | TIME (100 elems, mcs) |\n"
+#define MEASURE_TABLE_MSG "%s| BRANCHING (%%) | TIME / MEM (1000 elems, mcs) | TIME / MEM (10000 elems, mcs) | \
+TIME / MEM (25000 elems, mcs) | TIME / MEM (50000 elems, mcs) | TIME / MEM (100000 elems, mcs) |%s\n"
 
 #endif // ___MY_MSGS___

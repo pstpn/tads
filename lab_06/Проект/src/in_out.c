@@ -59,3 +59,22 @@ void print_tree_node_info(void *tree, void *param)
     draw_line(TABLE_WIDTH);
     printf("\n");
 }
+
+
+void print_measures(measurement_table *table, int len)
+{
+    draw_line(MEAS_TABLE_WIDTH);
+    printf(MEASURE_TABLE_MSG, BLUE, RESET);
+    draw_line(MEAS_TABLE_WIDTH);
+
+    for (int i = 0; i < len; i += 5)
+        printf("|%*d|%*llu     / %*d |%*llu     / %*d |%*llu     / %*d |%*llu     / %*d |%*llu     / %*d |\n",
+            FIRST_FIELD_WIDTH, table[i].branching, SECOND_FIELD_WIDTH / 2, table[i].time,
+            SECOND_FIELD_WIDTH / 2, table[i].mem, SECOND_FIELD_WIDTH / 2, table[i + 1].time,
+            SECOND_FIELD_WIDTH / 2 + 1, table[i + 1].mem, SECOND_FIELD_WIDTH / 2, table[i + 2].time,
+            SECOND_FIELD_WIDTH / 2 + 1, table[i + 2].mem, SECOND_FIELD_WIDTH / 2, table[i + 3].time,
+            SECOND_FIELD_WIDTH / 2 + 1, table[i + 3].mem, SECOND_FIELD_WIDTH / 2 + 1, table[i + 4].time,
+            SECOND_FIELD_WIDTH / 2 + 1, table[i + 4].mem);
+    
+    draw_line(MEAS_TABLE_WIDTH);
+}

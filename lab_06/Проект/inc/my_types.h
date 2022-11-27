@@ -33,8 +33,8 @@ typedef struct file_tree_node
 typedef struct measure
 {
     long long unsigned time;
-    
-    
+    int branching;
+    int mem;
 } measurement_table;
 
 #endif // ___MY_TYPES___

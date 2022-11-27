@@ -237,6 +237,8 @@ int main(void)
                     return ERR_ALLOC;
                 }
 
+                print_measures(measures, MEAS_COUNT);
+
                 break;
             }
         }
