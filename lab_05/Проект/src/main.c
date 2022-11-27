@@ -5,9 +5,6 @@
  * 
  *                     TASK:
  * 
- *                    Вариант 3
- * 
- * Перевести выражение в постфиксную форму
  * 
  * @version 0.1
  * @date 2022-11-04
@@ -52,12 +49,28 @@ int main(void)
     memset(p_nodes.p_nodes, 0, QUEUE_SIZE * sizeof(node_t *));
     p_nodes.len = 0;
 
+    process_info_t process_info;
+
+
+    process_info.first_machine_min_work_time = FIRST_MACHINE_MIN_WORK_TIME;
+    process_info.first_machine_max_work_time = FIRST_MACHINE_MAX_WORK_TIME;
+
+    process_info.second_machine_min_work_time = SECOND_MACHINE_MIN_WORK_TIME;
+    process_info.second_machine_max_work_time = SECOND_MACHINE_MAX_WORK_TIME;
+
+    process_info.prob = PROB;
+
 
     printf(INFO_MSG);
     
     while (key != 0)
     {
-        printf(MENU_MSG);
+        printf(MENU_MSG,
+        process_info.first_machine_min_work_time,
+        process_info.first_machine_max_work_time,
+        process_info.second_machine_min_work_time,
+        process_info.second_machine_max_work_time,
+        process_info.prob * 10);
 
         if (fscanf(stdin, "%d", &key) != 1 ||
         key < 0 || key > MENU_LEN)
@@ -141,7 +154,7 @@ int main(void)
                 double pop_elem;
 
 
-                print_del_ptrs(&(arr_queue->content[arr_queue->len - 1]), list_queue->top);
+                print_del_ptrs(&(arr_queue->content[0]), list_queue->top);
 
                 p_nodes.p_nodes[(p_nodes.len)++] = list_queue->top;
                 
@@ -157,13 +170,13 @@ int main(void)
                 char ans;
 
 
-                printf(INPUT_QUEUE_TYPE);
+                printf(INPUT_QUEUE_TYPE_MSG);
                 fscanf(stdin, "\n%c", &ans);
                 if (ans == '1')
                 {
                     clear_buf(stdin);
 
-                    if (arr_modeling())
+                    if (arr_modeling(process_info))
                     {
                         printf(ERR_ALLOC_MSG, RED, RESET);
                         return ERR_ALLOC;
@@ -173,7 +186,7 @@ int main(void)
                 {
                     clear_buf(stdin);
 
-                    if (list_modeling())
+                    if (list_modeling(process_info))
                     {
                         printf(ERR_ALLOC_MSG, RED, RESET);
                         return ERR_ALLOC;
@@ -199,6 +212,78 @@ int main(void)
                 }
 
                 print_measures(measures, MEAS_COUNT);
+
+                break;
+            }
+            case 6:
+            {
+                int buf_1, buf_2;
+
+
+                printf(INPUT_MIN_MACHINE_TIME_MSG);
+                if (fscanf(stdin, "%d", &(buf_1)) != 1)
+                {
+                    printf(ERR_READING_STDIN_MSG, RED, RESET);
+                    clear_buf(stdin);
+                    break;
+                }
+
+                printf(INPUT_MAX_MACHINE_TIME_MSG);
+                if (fscanf(stdin, "%d", &(buf_2)) != 1 ||
+                    buf_1 > buf_2)
+                {
+                    printf(ERR_READING_STDIN_MSG, RED, RESET);
+                    clear_buf(stdin);
+                    break;
+                }
+
+                process_info.first_machine_min_work_time = buf_1;
+                process_info.first_machine_max_work_time = buf_2;
+
+                break;
+            }
+            case 7:
+            {
+                int buf_1, buf_2;
+
+
+                printf(INPUT_MIN_MACHINE_TIME_MSG);
+                if (fscanf(stdin, "%d", &(buf_1)) != 1)
+                {
+                    printf(ERR_READING_STDIN_MSG, RED, RESET);
+                    clear_buf(stdin);
+                    break;
+                }
+
+                printf(INPUT_MAX_MACHINE_TIME_MSG);
+                if (fscanf(stdin, "%d", &(buf_2)) != 1 ||
+                    buf_1 > buf_2)
+                {
+                    printf(ERR_READING_STDIN_MSG, RED, RESET);
+                    clear_buf(stdin);
+                    break;
+                }
+
+                process_info.second_machine_min_work_time = buf_1;
+                process_info.second_machine_max_work_time = buf_2;
+
+                break;
+            }
+            case 8:
+            {
+                double buf;
+
+
+                printf(INPUT_PROB_MSG);
+                if (fscanf(stdin, "%lf", &(buf)) != 1 ||
+                    buf < 0 || buf > 100)
+                {
+                    printf(ERR_READING_STDIN_MSG, RED, RESET);
+                    clear_buf(stdin);
+                    break;
+                }
+
+                process_info.prob = buf / 10;
 
                 break;
             }

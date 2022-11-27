@@ -20,7 +20,11 @@ $(OBJ_FOLDER)%.o : */%.c $(INC_FOLDER)*.h
 	mkdir -p out/
 	$(CC) $(CFLAGS) -c $< -o $@
 
-.PHONY: debug release clean
+.PHONY: debug release run clean
+
+run :
+	make release -B
+	./app.exe
 
 clean :
 	- rm *.txt *.exe

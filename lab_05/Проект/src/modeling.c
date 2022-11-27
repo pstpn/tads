@@ -40,7 +40,7 @@ double get_random_double(double min, double max)
 }
 
 
-int arr_modeling(void)
+int arr_modeling(process_info_t process_info)
 {
     int first_machine_act_count = 0;
     int second_machine_act_count = 0;
@@ -52,7 +52,7 @@ int arr_modeling(void)
     double cur_elem;
     
     double cur_time;
-    double all_timer;
+    double all_timer = 0;
     
     double first_machine_timer = 0;
     double second_machine_timer = 0;
@@ -86,7 +86,7 @@ int arr_modeling(void)
         if ((second_machine_timer < first_machine_timer && second_arr_queue->len > 0) ||
             (second_machine_timer > first_machine_timer && !first_arr_queue->len))
         {
-            cur_time = get_random_double(SECOND_MACHINE_START_WORK_TIME, SECOND_MACHINE_FINISH_WORK_TIME);
+            cur_time = get_random_double(process_info.second_machine_min_work_time, process_info.second_machine_max_work_time);
 
             pop_arr_queue(second_arr_queue, &cur_elem);
             
@@ -107,7 +107,7 @@ int arr_modeling(void)
         }
         else if (first_arr_queue->len > 0)
         {
-            cur_time = get_random_double(FIRST_MACHINE_START_WORK_TIME, FIRST_MACHINE_FINISH_WORK_TIME);
+            cur_time = get_random_double(process_info.first_machine_min_work_time, process_info.first_machine_max_work_time);
 
             pop_arr_queue(first_arr_queue, &cur_elem);
             
@@ -121,7 +121,7 @@ int arr_modeling(void)
 
             cur_prob = get_random_double(MIN_PROB, MAX_PROB);
 
-            if (cur_prob > PROB)
+            if (cur_prob > process_info.prob)
                 push_arr_queue(second_arr_queue, all_timer);
             else
                 push_arr_queue(first_arr_queue, all_timer);
@@ -152,7 +152,7 @@ int arr_modeling(void)
     }
 
     double machine_reference = MAX_REQUESTS_COUNT * ((double)
-        (SECOND_MACHINE_START_WORK_TIME + SECOND_MACHINE_FINISH_WORK_TIME) / 2);
+        (process_info.second_machine_min_work_time + process_info.second_machine_max_work_time) / 2);
     
     double error = fabs((double) (second_machine_timer - machine_reference) / machine_reference) * 100;
 
@@ -169,7 +169,7 @@ int arr_modeling(void)
 }
 
 
-int list_modeling(void)
+int list_modeling(process_info_t process_info)
 {
     int first_machine_act_count = 0;
     int second_machine_act_count = 0;
@@ -221,7 +221,7 @@ int list_modeling(void)
         if ((second_machine_timer < first_machine_timer && second_list_queue->len > 0) ||
             (second_machine_timer > first_machine_timer && !first_list_queue->len))
         {
-            cur_time = get_random_double(SECOND_MACHINE_START_WORK_TIME, SECOND_MACHINE_FINISH_WORK_TIME);
+            cur_time = get_random_double(process_info.second_machine_min_work_time, process_info.second_machine_max_work_time);
 
             pop_list_queue(second_list_queue, &cur_elem);
             
@@ -254,7 +254,7 @@ int list_modeling(void)
         }
         else if (first_list_queue->len > 0)
         {
-            cur_time = get_random_double(FIRST_MACHINE_START_WORK_TIME, FIRST_MACHINE_FINISH_WORK_TIME);
+            cur_time = get_random_double(process_info.first_machine_min_work_time, process_info.first_machine_max_work_time);
 
             pop_list_queue(first_list_queue, &cur_elem);
             
@@ -280,7 +280,7 @@ int list_modeling(void)
             cur->item = all_timer;
             cur->next = NULL;
 
-            if (cur_prob > PROB)
+            if (cur_prob > process_info.prob)
                 push_list_queue(&second_list_queue, cur);
             else
                 push_list_queue(&first_list_queue, cur);
@@ -311,7 +311,7 @@ int list_modeling(void)
     }
 
     double machine_reference = MAX_REQUESTS_COUNT * ((double)
-        (SECOND_MACHINE_START_WORK_TIME + SECOND_MACHINE_FINISH_WORK_TIME) / 2);
+        (process_info.second_machine_min_work_time + process_info.second_machine_max_work_time) / 2);
     
     double error = fabs((double) (second_machine_timer - machine_reference) / machine_reference) * 100;
 

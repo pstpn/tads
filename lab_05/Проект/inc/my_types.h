@@ -31,6 +31,18 @@ typedef struct
 } p_node_t;
 
 
+typedef struct 
+{
+    int first_machine_min_work_time;
+    int first_machine_max_work_time;
+
+    int second_machine_min_work_time;
+    int second_machine_max_work_time;
+
+    double prob;
+} process_info_t;
+
+
 typedef struct measure
 {
     long long unsigned time;
