@@ -4,8 +4,8 @@
 Построить дерево в соответствии со своим вариантом задания. Вывести
 его на экран в виде дерева. Реализовать основные операции работы с
 деревом: обход дерева, включение, исключение и поиск узлов. Сравнить
-эффективность алгоритмов сортировки и поиска в зависимости от высоты
-деревьев и степени их ветвления.
+эффективность алгоритма поиска в зависимости от высоты
+дерева и степени его ветвления.
 
 В файловой системе каталог файлов организован в виде бинарного дерева.
 Каждый узел обозначает файл, содержащий имя и атрибуты файла, в том числе и
@@ -44,7 +44,7 @@ int main(void)
         key < 0 || key > MENU_LEN)
         {
             printf(ERR_CODE_MSG, RED, RESET);
-            apply(root_node, destroy_node, NULL, FALSE);
+            apply(root_node, destroy_node, NULL, FALSE, FALSE);
             return ERR_CODE;
         }
 
@@ -52,7 +52,7 @@ int main(void)
         {
             case 0:
             {
-                apply(root_node, destroy_node, NULL, FALSE);
+                apply(root_node, destroy_node, NULL, FALSE, FALSE);
                 return SUCCESS;
             }
             case 1:
@@ -60,7 +60,7 @@ int main(void)
                 FILE *f = fopen(GRAPH_FILENAME, "w");
                 
 
-                export_to_dot(f, TREE_NAME, root_node);
+                export_to_dot(f, TREE_NAME, root_node, FALSE);
 
                 fclose(f);
 
@@ -72,7 +72,7 @@ int main(void)
             }
             case 2:
             {
-                apply(root_node, print_node_info, stdout, TRUE);
+                apply(root_node, print_tree_node_info, stdout, TRUE, FALSE);
 
                 break;
             }
@@ -96,7 +96,7 @@ int main(void)
                 if (!new_node)
                 {
                     printf(ERR_ALLOC_MSG, RED, RESET);
-                    apply(root_node, destroy_node, NULL, FALSE);
+                    apply(root_node, destroy_node, NULL, FALSE, FALSE);
                     return ERR_ALLOC;
                 }
 
@@ -106,29 +106,35 @@ int main(void)
 
                 break;
             }
+            case 4:
+            {
+                if (!root_node)
+                    printf(EMPTY_TREE_MSG, RED, RESET);
+                else
+                {
+                    int del_index;
+
+
+                    printf(INPUT_DEL_INDEX_MSG);
+                    if (fscanf(stdin, "%d", &del_index) != 1 || del_index < 0)
+                    {
+                        printf(ERR_READING_STDIN_MSG, RED, RESET);
+                        clear_buf(stdin);
+                        break;
+                    }
+
+                    root_node = del_tree_node(root_node, &del_index);
+
+                    if (del_index > 0)
+                        printf(ELEM_NOT_FOUND_MSG, RED, RESET);
+                    else
+                        printf(DEL_ELEM_MSG, GREEN, RESET);
+                }
+
+                break;
+            }
         }
     }
-//             case 4:
-//             {
-//                 if (!list_queue->len || !arr_queue->len)
-//                 {
-//                     printf(ERR_QUEUE_IS_EMPTY_MSG, RED, RESET);
-//                     clear_buf(stdin);
-//                     break;
-//                 }
-
-//                 double pop_elem;
-
-
-//                 print_del_ptrs(&(arr_queue->content[arr_queue->len - 1]), list_queue->top);
-
-//                 p_nodes.p_nodes[(p_nodes.len)++] = list_queue->top;
-                
-//                 pop_list_queue(list_queue, &pop_elem);
-//                 pop_arr_queue(arr_queue, &pop_elem);
-
-//                 break;
-//             }
 //             case 4:
 //             {
 //                 clear_buf(stdin);

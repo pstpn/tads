@@ -6,7 +6,7 @@
 #include "my_types.h"
 
 
-void to_dot(tree_node_t *tree, FILE *f);
-void export_to_dot(FILE *f, const char *tree_name, tree_node_t *root_node);
+void tree_to_dot(tree_node_t *tree, void *param);
+void export_to_dot(FILE *f, const char *tree_name, void *root_node, int is_file_tree);
 
 #endif // ___MY_GRAPH___

@@ -39,7 +39,7 @@ void draw_line(int len)
 }
 
 
-void print_node_info(tree_node_t *tree, void *param)
+void print_tree_node_info(void *tree, void *param)
 {
     FILE *f = param;
 
@@ -47,14 +47,14 @@ void print_node_info(tree_node_t *tree, void *param)
     draw_line(TABLE_WIDTH);
 
     fprintf(f, NODE_INFO_MSG, BLUE, PURPLE, INDEX_WIDTH,
-    tree->index, RESET, BLUE, GREEN, VALUE_WIDTH,
-    tree->value, RESET, BLUE, RED, POINTER_WIDTH,
-    (void *) &tree, RESET, PURPLE, INDEX_WIDTH,
-    (tree->left) ? tree->left->index : -1, RESET, GREEN,
-    CHILD_WIDTH, (tree->left) ? tree->left->value : ' ',
+    ((tree_node_t *) tree)->index, RESET, BLUE, GREEN, VALUE_WIDTH,
+    ((tree_node_t *) tree)->value, RESET, BLUE, RED, POINTER_WIDTH,
+    tree, RESET, PURPLE, INDEX_WIDTH,
+    (((tree_node_t *) tree)->left) ? ((tree_node_t *) ((tree_node_t *) tree)->left)->index : -1, RESET, GREEN,
+    CHILD_WIDTH, (((tree_node_t *) tree)->left) ? ((tree_node_t *) ((tree_node_t *) tree)->left)->value : ' ',
     RESET,PURPLE, INDEX_WIDTH,
-    (tree->right) ? tree->right->index : -1, RESET, GREEN,
-    CHILD_WIDTH, (tree->right) ? tree->right->value : ' ', RESET);
+    (((tree_node_t *) tree)->right) ? ((tree_node_t *) ((tree_node_t *) tree)->right)->index : -1, RESET, GREEN,
+    CHILD_WIDTH, (((tree_node_t *) tree)->right) ? ((tree_node_t *) ((tree_node_t *) tree)->right)->value : ' ', RESET);
 
     draw_line(TABLE_WIDTH);
     printf("\n");

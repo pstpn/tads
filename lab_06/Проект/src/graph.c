@@ -5,30 +5,37 @@
 #include "../inc/my_def.h"
 
 
-void to_dot(tree_node_t *tree, void *param)
+void tree_to_dot(void *tree, void *param)
 {
     FILE *f = param;
 
 
-    fprintf(f, "%c%d [label=\"%d | %c\"]\n", tree->value, tree->index, tree->index, tree->value);
+    fprintf(f, "%c%d [label=\"%d | %c\"]\n", ((tree_node_t *) tree)->value, ((tree_node_t *) tree)->index,
+        ((tree_node_t *) tree)->index, ((tree_node_t *) tree)->value);
 
-    if (tree->left)
-        fprintf(f, "%c%d -> %c%d;\n", tree->value, tree->index, tree->left->value, tree->left->index);
+    if (((tree_node_t *) tree)->left)
+        fprintf(f, "%c%d -> %c%d;\n", ((tree_node_t *) tree)->value, ((tree_node_t *) tree)->index,
+            ((tree_node_t *) tree)->left->value, ((tree_node_t *) tree)->left->index);
     else
-        fprintf(f, "%c%d -> \"%d | %s\";\n", tree->value, tree->index, tree->index, NULL_STR);
+        fprintf(f, "%c%d -> \"%d | %s\";\n", ((tree_node_t *) tree)->value, ((tree_node_t *) tree)->index,
+            ((tree_node_t *) tree)->index, NULL_STR);
 
-    if (tree->right)
-        fprintf(f, "%c%d -> %c%d;\n", tree->value, tree->index, tree->right->value, tree->right->index);
+    if (((tree_node_t *) tree)->right)
+        fprintf(f, "%c%d -> %c%d;\n", ((tree_node_t *) tree)->value, ((tree_node_t *) tree)->index,
+            ((tree_node_t *) tree)->right->value, ((tree_node_t *) tree)->right->index);
     else
-        fprintf(f, "%c%d -> \"%d | %s\";\n", tree->value, tree->index, tree->index, NULL_STR);
+        fprintf(f, "%c%d -> \"%d | %s\";\n", ((tree_node_t *) tree)->value, ((tree_node_t *) tree)->index,
+            ((tree_node_t *) tree)->index, NULL_STR);
 }
 
 
-void export_to_dot(FILE *f, const char *tree_name, tree_node_t *root_node)
+void export_to_dot(FILE *f, const char *tree_name, void *root_node, int is_file_tree)
 {
     fprintf(f, "digraph %s {\n", tree_name);
 
-    apply(root_node, to_dot, f, TRUE);
+    if (!is_file_tree)
+        apply(root_node, tree_to_dot, f, TRUE, is_file_tree);
+    // else TODO
 
     fprintf(f, "}\n");
 }
