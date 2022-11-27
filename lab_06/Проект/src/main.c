@@ -4,8 +4,7 @@
 Построить дерево в соответствии со своим вариантом задания. Вывести
 его на экран в виде дерева. Реализовать основные операции работы с
 деревом: обход дерева, включение, исключение и поиск узлов. Сравнить
-эффективность алгоритма поиска в зависимости от высоты
-дерева и степени его ветвления.
+эффективность алгоритма поиска в зависимости от степени его ветвления.
 
 В файловой системе каталог файлов организован в виде бинарного дерева.
 Каждый узел обозначает файл, содержащий имя и атрибуты файла, в том числе и
@@ -24,6 +23,7 @@
 #include "../inc/tree_funcs.h"
 #include "../inc/graph.h"
 #include "../inc/in_out.h"
+#include "../inc/my_measure.h"
 
 
 int main(void)
@@ -57,16 +57,16 @@ int main(void)
             }
             case 1:
             {
-                FILE *f = fopen(GRAPH_FILENAME, "w");
+                FILE *f = fopen(TREE_GRAPH_FILENAME, "w");
                 
 
                 export_to_dot(f, TREE_NAME, root_node, FALSE);
 
                 fclose(f);
 
-                system(MAKE_GRAPH_COMMAND);
+                system(MAKE_TREE_GRAPH_COMMAND);
 
-                system(OPEN_PNG_COMMAND);
+                system(OPEN_TREE_PNG_COMMAND);
 
                 break;
             }
@@ -133,62 +133,114 @@ int main(void)
 
                 break;
             }
+            case 5:
+            {
+                if (!root_node)
+                    printf(EMPTY_TREE_MSG, RED, RESET);
+                else
+                {
+                    int f_index;
+
+
+                    printf(INPUT_FIND_INDEX_MSG);
+                    if (fscanf(stdin, "%d", &f_index) != 1 || f_index < 0)
+                    {
+                        printf(ERR_READING_STDIN_MSG, RED, RESET);
+                        clear_buf(stdin);
+                        break;
+                    }
+
+                    tree_node_t *f_tree_node = find_tree_node(root_node, &f_index);
+
+
+                    if (f_index > 0)
+                        printf(ELEM_NOT_FOUND_MSG, RED, RESET);
+                    else
+                        print_tree_node_info((void *) f_tree_node, stdout);
+                }
+
+                break;
+            }
+            case 6:
+            {
+                int count;
+
+                char buf;
+
+
+                printf(INPUT_FILE_TREE_NODES_COUNT_MSG);
+                if (fscanf(stdin, "%d%c", &count, &buf) != 2 || buf != '\n'
+                || count < 1)
+                {
+                    printf(ERR_FILE_TREE_NODES_COUNT_MSG, RED, RESET);
+                    clear_buf(stdin);
+                    break;
+                }
+
+                file_tree_node_t *root_file_node = generate_file_tree(count);
+                if (!root_file_node)
+                {
+                    printf(ERR_ALLOC_MSG, RED, RESET);
+                    apply(root_node, destroy_node, NULL, FALSE, FALSE);
+                    return ERR_ALLOC;
+                }
+
+                FILE *f = fopen(IN_FILE_TREE_GRAPH_FILENAME, "w");
+                
+
+                export_to_dot(f, IN_FILE_TREE_NAME, root_file_node, TRUE);
+
+                fclose(f);
+
+                system(MAKE_IN_FILE_TREE_GRAPH_COMMAND);
+
+                system(OPEN_IN_FILE_TREE_PNG_COMMAND);
+
+                int del_num, del_month, del_year;
+
+
+                printf(INPUT_DATE_FILE_TREE_MSG);
+                if (fscanf(stdin, "%d.%d.%d", &del_num, &del_month, &del_year) != 3 ||
+                    del_num < 1 || del_month < 1 || del_month > 12 || del_year < 1 ||
+                    del_num > 31)
+                {
+                    printf(ERR_GET_DATE_MSG, RED, RESET);
+                    clear_buf(stdin);
+                    break;
+                }
+
+                root_file_node = del_file_tree_nodes(root_file_node, del_num, del_month, del_year);            
+
+                FILE *g = fopen(OUT_FILE_TREE_GRAPH_FILENAME, "w");
+                
+
+                export_to_dot(g, OUT_FILE_TREE_NAME, root_file_node, TRUE);
+
+                fclose(g);
+
+                system(MAKE_OUT_FILE_TREE_GRAPH_COMMAND);
+
+                system(OPEN_OUT_FILE_TREE_PNG_COMMAND);
+
+                apply(root_file_node, destroy_node, NULL, FALSE, TRUE);
+
+                break;
+            }
+            case 7:
+            {
+                measurement_table measures[MEAS_COUNT] = { 0 };
+
+
+                if (get_measures(measures))
+                {
+                    printf(ERR_MEASURES_MSG, RED, RESET);
+                    return ERR_ALLOC;
+                }
+
+                break;
+            }
         }
     }
-//             case 4:
-//             {
-//                 clear_buf(stdin);
-
-//                 char ans;
-
-
-//                 printf(INPUT_QUEUE_TYPE);
-//                 fscanf(stdin, "\n%c", &ans);
-//                 if (ans == '1')
-//                 {
-//                     clear_buf(stdin);
-
-//                     if (arr_modeling())
-//                     {
-//                         printf(ERR_ALLOC_MSG, RED, RESET);
-//                         return ERR_ALLOC;
-//                     }
-//                 }
-//                 else if (ans == '2')
-//                 {
-//                     clear_buf(stdin);
-
-//                     if (list_modeling())
-//                     {
-//                         printf(ERR_ALLOC_MSG, RED, RESET);
-//                         return ERR_ALLOC;
-//                     }
-//                 }
-//                 else
-//                 {
-//                     printf(ERR_CODE_MSG, RED, RESET);
-//                     clear_buf(stdin);
-//                 }
-
-//                 break;
-//             }
-//             case 5:
-//             {
-//                 measurement_table measures[MEAS_COUNT] = { 0 };
-
-
-//                 if (get_measures(measures))
-//                 {
-//                     printf(ERR_MEASURES_MSG, RED, RESET);
-//                     return ERR_ALLOC;
-//                 }
-
-//                 print_measures(measures, MEAS_COUNT);
-
-//                 break;
-//             }
-//         }
-//     }
     
     return SUCCESS;
 }

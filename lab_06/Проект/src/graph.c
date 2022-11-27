@@ -29,13 +29,33 @@ void tree_to_dot(void *tree, void *param)
 }
 
 
+void file_tree_to_dot(void *tree, void *param)
+{
+    FILE *f = param;
+
+
+    fprintf(f, "%s%d [label=\"FILENAME: %s\nDATE: %d.%d.%d\"]\n", ((file_tree_node_t *) tree)->filename, ((file_tree_node_t *) tree)->date.num,
+        ((file_tree_node_t *) tree)->filename, ((file_tree_node_t *) tree)->date.num,
+        ((file_tree_node_t *) tree)->date.month, ((file_tree_node_t *) tree)->date.year);
+
+    if (((file_tree_node_t *) tree)->left)
+        fprintf(f, "%s%d -> %s%d;\n", ((file_tree_node_t *) tree)->filename, ((file_tree_node_t *) tree)->date.num,
+            ((file_tree_node_t *) tree)->left->filename, ((file_tree_node_t *) tree)->left->date.num);
+
+    if (((file_tree_node_t *) tree)->right)
+        fprintf(f, "%s%d -> %s%d;\n", ((file_tree_node_t *) tree)->filename, ((file_tree_node_t *) tree)->date.num,
+            ((file_tree_node_t *) tree)->right->filename, ((file_tree_node_t *) tree)->right->date.num);
+}
+
+
 void export_to_dot(FILE *f, const char *tree_name, void *root_node, int is_file_tree)
 {
     fprintf(f, "digraph %s {\n", tree_name);
 
     if (!is_file_tree)
         apply(root_node, tree_to_dot, f, TRUE, is_file_tree);
-    // else TODO
+    else
+        apply(root_node, file_tree_to_dot, f, TRUE, is_file_tree);
 
     fprintf(f, "}\n");
 }

@@ -30,11 +30,11 @@ typedef struct file_tree_node
 } file_tree_node_t;
 
 
-// typedef struct measure
-// {
-//     long long unsigned time;
-//     int mem;
-//     int queue_len;
-// } measurement_table;
+typedef struct measure
+{
+    long long unsigned time;
+    
+    
+} measurement_table;
 
 #endif // ___MY_TYPES___
