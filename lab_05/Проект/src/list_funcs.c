@@ -15,6 +15,7 @@ list_queue_t *create_list_queue(void)
     if (s)
     {
         s->top = NULL;
+        s->last = NULL;
         s->len = 0;
     }
 
@@ -24,17 +25,15 @@ list_queue_t *create_list_queue(void)
 
 void push_list_queue(list_queue_t **s, node_t *new_node)
 {
-    node_t *cur_node = (*s)->top;
-
-
     if (!(*s)->top)
+    {
         (*s)->top = new_node;
+        (*s)->last = new_node;
+    }
     else
     {
-        while (cur_node->next)
-            cur_node = cur_node->next;
-
-        cur_node->next = new_node;
+        (*s)->last->next = new_node;
+        (*s)->last = new_node;
     }
 
     ++(*s)->len;

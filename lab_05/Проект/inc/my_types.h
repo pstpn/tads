@@ -21,6 +21,7 @@ struct node
 typedef struct
 {
     node_t *top;
+    node_t *last;
     int len;
 } list_queue_t;
 
