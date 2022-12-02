@@ -6,6 +6,7 @@
 
 tree_node_t *create_node(int index, char value);
 void apply(void *tree, void (*f)(void *, void *), void *arg, int is_pre, int is_file_tree);
+void inf_apply(void *tree, void (*f)(void *, void *), void *arg);
 tree_node_t *insert(tree_node_t *tree, tree_node_t *node);
 tree_node_t *find_right_min_tree(tree_node_t *tree);
 file_tree_node_t *find_right_min_file_tree(file_tree_node_t *tree);

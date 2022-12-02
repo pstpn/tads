@@ -72,7 +72,30 @@ int main(void)
             }
             case 2:
             {
-                apply(root_node, print_tree_node_info, stdout, TRUE, FALSE);
+                int type;
+                
+                char buf;
+
+
+                printf(INPUT_DETOUR_TYPE_MSG);
+                if (fscanf(stdin, "%d%c", &type, &buf) != 2 || buf != '\n')
+                {
+                    printf(ERR_READING_STDIN_MSG, RED, RESET);
+                    clear_buf(stdin);
+                    break;
+                }
+                if (type < 1 || type > 3)
+                {
+                    printf(ERR_READING_STDIN_MSG, RED, RESET);
+                    break;
+                }
+
+                if (type == 1)
+                    apply(root_node, print_tree_node_info, stdout, TRUE, FALSE);
+                if (type == 2)
+                    inf_apply(root_node, print_tree_node_info, stdout);
+                if (type == 3)
+                    apply(root_node, print_tree_node_info, stdout, FALSE, FALSE);
 
                 break;
             }

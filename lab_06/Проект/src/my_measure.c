@@ -19,29 +19,35 @@ unsigned long long microseconds_now(void)
 }
 
 
-tree_node_t *generate_tree(int count, int depth)
+tree_node_t *generate_tree(tree_node_t *root_node, int count, int branching, int *index)
 {
-    int index = 0;
+    int is_left = FALSE;
 
-    tree_node_t *root_node = calloc(1, sizeof(tree_node_t));
+
+    if (!root_node)
+    {
+        root_node = calloc(1, sizeof(tree_node_t));
+
+        root_node->index = (*index)++;
+        root_node->value = 'r';
+
+        root_node->left = NULL;
+        root_node->right = NULL;
+
+        is_left = TRUE;
+    }
+
     tree_node_t *cur_head_node = root_node;
 
 
-    root_node->index = index++;
-    root_node->value = 'r';
+    branching = (int) (count-- * ((double) branching / 100)) / 2;
 
-    root_node->left = NULL;
-    root_node->right = NULL;
-
-
-    depth = (int) (count-- * ((double) depth / 100)) / 2;
-
-    for (; depth; --depth, count -= 2, cur_head_node = cur_head_node->left)
+    for (; branching; --branching, count -= 2, cur_head_node = (is_left) ? cur_head_node->left : cur_head_node->right)
     {
         tree_node_t *cur_node_1 = calloc(1, sizeof(tree_node_t));
         
 
-        cur_node_1->index = index++;
+        cur_node_1->index = (*index)++;
         cur_node_1->value = 'a';
 
         cur_node_1->left = NULL;
@@ -50,7 +56,7 @@ tree_node_t *generate_tree(int count, int depth)
         tree_node_t *cur_node_2 = calloc(1, sizeof(tree_node_t));
         
 
-        cur_node_2->index = index++;
+        cur_node_2->index = (*index)++;
         cur_node_2->value = 'a';
 
         cur_node_2->left = NULL;
@@ -61,20 +67,26 @@ tree_node_t *generate_tree(int count, int depth)
         cur_head_node->right = cur_node_2;
     }
 
-    cur_head_node = (cur_head_node->left) ? cur_head_node->left : cur_head_node;
+    if (is_left)
+        cur_head_node = (cur_head_node->left) ? cur_head_node->left : cur_head_node;
+    else
+        cur_head_node = (cur_head_node->right) ? cur_head_node->right : cur_head_node;
 
-    for (; count > 0; --count, cur_head_node = cur_head_node->left)
+    for (; count > 0; --count, cur_head_node = (is_left) ? cur_head_node->left : cur_head_node->right)
     {
         tree_node_t *cur_node = calloc(1, sizeof(tree_node_t));
         
 
-        cur_node->index = index++;
+        cur_node->index = (*index)++;
         cur_node->value = 'a';
 
         cur_node->left = NULL;
         cur_node->right = NULL;
 
-        cur_head_node->left = cur_node;
+        if (is_left)
+            cur_head_node->left = cur_node;
+        else
+            cur_head_node->right = cur_node;
     }
 
     return root_node;
@@ -89,14 +101,19 @@ int get_measures(measurement_table table[MEAS_COUNT])
     long long unsigned beg, end;
 
 
-    for (int i = 0; i < 5; ++i)
+    for (int i = 0; i < 1; ++i)
     {
-        for (int j = 0; j < 5; ++j)
+        for (int j = 0; j < 1; ++j)
         {
-            tree_node_t *root_node = generate_tree(counts[j], branching[i]);
+            tree_node_t *root_node = NULL;
 
             int f_ind = counts[j];
+            int index = 0;
 
+
+            root_node = generate_tree(root_node, counts[j], branching[i], &index);
+
+            root_node = generate_tree(root_node, counts[j], branching[i], &index);
 
             beg = microseconds_now();
 

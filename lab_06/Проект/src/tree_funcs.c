@@ -37,12 +37,25 @@ void apply(void *tree, void (*f)(void *, void *), void *arg, int is_pre, int is_
 }
 
 
+void inf_apply(void *tree, void (*f)(void *, void *), void *arg)
+{
+    if (tree == NULL)
+        return;
+
+    inf_apply((void *) ((tree_node_t *) tree)->left, f, arg);
+
+    f(tree, arg);
+
+    inf_apply((void *) ((tree_node_t *) tree)->right, f, arg);
+}
+
+
 tree_node_t *insert(tree_node_t *tree, tree_node_t *node)
 {
     if (tree == NULL)
         return node;
 
-    if (node->value < tree->value)
+    if (node->value <= tree->value)
         tree->left = insert(tree->left, node);
     else
         tree->right = insert(tree->right, node);

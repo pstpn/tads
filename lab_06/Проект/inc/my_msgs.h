@@ -10,6 +10,7 @@
 #define INPUT_FIND_INDEX_MSG "\nВведите индекс элемента, который Вы хотите найти: "
 #define INPUT_FILE_TREE_NODES_COUNT_MSG "\nВведите желаемое количество элементов в дереве: "
 #define INPUT_DATE_FILE_TREE_MSG "\nВведите дату, до которой произвести удаление всех файлов (в виде \"num.month.year\"): "
+#define INPUT_DETOUR_TYPE_MSG "\nВведите желаемый тип обхода:\n1 -- Префиксный\n2 -- Инфиксный\n3 -- Постфиксный\n: "
 #define ELEM_NOT_FOUND_MSG "\n%sЭлемент с таким индексом не был найден! Попробуйте другой.%s\n"
 #define EMPTY_TREE_MSG "\n%sДерево пусто. Сначала добавьте элементы!%s\n"
 #define DEL_ELEM_MSG "\n%sЭлемент успешно удален!%s\n"
