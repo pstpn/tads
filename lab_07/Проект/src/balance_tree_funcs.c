@@ -42,9 +42,9 @@ int get_balance(balance_tree_node_t *node)
     if (!node->right && !node->left)
         return 0;
     else if (!node->right && node->left)
-        return (node->left->height >= 2) ? 2 : node->left->height;
+        return (node->left->height + 1 >= 2) ? 2 : node->left->height + 1;
     else if (node->right && !node->left)
-        return (node->right->height >= 2) ? -2 : -(node->right->height);
+        return (node->right->height + 1 >= 2) ? -2 : -(node->right->height + 1);
     else
         return node->left->height - node->right->height;
 }
@@ -58,8 +58,8 @@ balance_tree_node_t *left_rotate(balance_tree_node_t *node)
     node->right = new_node->left;
     new_node->left = node;
     
-    new_node->height = get_height(new_node);
     node->height = get_height(node);
+    new_node->height = get_height(new_node);
 
 	return new_node;
 }
@@ -73,8 +73,8 @@ balance_tree_node_t *right_rotate(balance_tree_node_t *node)
     node->left = new_node->right;
     new_node->right = node;
     
-    new_node->height = get_height(new_node);
     node->height = get_height(node);
+    new_node->height = get_height(new_node);
 
 	return new_node;
 }

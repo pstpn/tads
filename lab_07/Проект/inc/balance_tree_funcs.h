@@ -5,7 +5,7 @@
 #include "my_def.h"
 
 
-balance_tree_node_t *create_node(int balance, char *keyword);
+balance_tree_node_t *create_node(char *keyword);
 int get_height(balance_tree_node_t *node);
 int get_balance(balance_tree_node_t *node);
 balance_tree_node_t *left_rotate(balance_tree_node_t *node);
