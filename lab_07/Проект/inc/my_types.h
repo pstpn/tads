@@ -1,6 +1,8 @@
 #ifndef ___MY_TYPES___
 #define ___MY_TYPES___
 
+#include "my_def.h"
+
 
 typedef struct balance_tree_node
 {    
@@ -10,6 +12,29 @@ typedef struct balance_tree_node
     struct balance_tree_node *left;
     struct balance_tree_node *right;
 } balance_tree_node_t;
+
+
+typedef struct 
+{
+    char keyword[MAX_KEYWORD_LEN + 1];
+    char help[MAX_HELP_LEN + 1];
+} keyword_info_t;
+
+
+typedef struct list_keyword
+{
+    char keyword[MAX_KEYWORD_LEN + 1];
+    char help[MAX_HELP_LEN + 1];
+
+    struct list_keyword *next;
+} list_keyword_info_t;
+
+
+typedef struct 
+{
+    keyword_info_t **data;
+    int size;
+} hash_table_t;
 
 
 // typedef struct measure

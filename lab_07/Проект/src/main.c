@@ -1,5 +1,6 @@
 /*
 
+
 Построить хеш-таблицу для зарезервированных слов языка С++ (не
 менее 20 слов), содержащую HELP для каждого слова. Выдать на экран
 подсказку по введенному слову. Выполнить программу для различных
@@ -20,17 +21,73 @@
 #include "my_err.h"
 #include "balance_tree_funcs.h"
 #include "graph.h"
+#include "hash_table_funcs.h"
+#include "tools.h"
+#include "in_out.h"
 
 
 int main(void)
 {
-    char CPP_KEYWORDS[KEYWORDS_COUNT][MAX_KEYWORD_LEN + 1] = 
-        { "case", "bool", "break", "char", "continue", "delete",
-        "default", "do", "else", "enum", "export", "extern",
-        "true", "false", "for", "goto", "if", "static",
-        "or", "typedef" };
+    char CPP_KEYWORDS[MAX_KEYWORDS_COUNT][MAX_KEYWORD_LEN + 1] = 
+        {
+            "case", "bool", "break", "char", "continue", "delete",
+            "default", "do", "else", "enum", "export", "extern",
+            "true", "false", "for", "goto", "if", "static",
+            "or", "typedef", "while", "return", "double"
+        };
+
+    char CPP_HELP[MAX_KEYWORDS_COUNT][MAX_HELP_LEN + 1] = 
+        {
+            "Switch statement: as the declaration of the case labels",
+            "Bool type: as the declaration of the type",
+            "Break statement: as the declaration of the statement",
+            "Char type: as the declaration of the type",
+            "Continue statement: as the declaration of the statement",
+            "Deallocation functions as the name of operator-like functions",
+            "Switch statement: as the declaration of the default case label",
+            "Do-while loop: as the declaration of the loop",
+            "If statement: as the declaration of the alternative branch",
+            "Declaration of an enumeration type",
+            "Used to mark a template definition exported, which allows the same \
+template to be declared, but not defined, in other translation units.",
+            "Static storage duration with external linkage specifier",
+            "True: boolean literal",
+            "False: boolean literal",
+            "For loop: as the declaration of the loop",
+            "Goto statement: as the declaration of the statement",
+            "If statement: as the declaration of the if statement",
+            "Declarations of namespace members with static storage duration and internal linkage",
+            "Alternative operators: as an alternative for ||",
+            "Typedef declaration",
+            "While loop: as the declaration of the loop",
+            "Return statement: as the declaration of the statement",
+            "Double type: as the declaration of the type"
+        };
+
+    hash_table_t *hash_table = NULL;
+
+    int is_list_hash_table = FALSE;
+
+    int rc = create_hash_table(&hash_table, CPP_KEYWORDS, CPP_HELP, KEYWORDS_COUNT, KEYWORDS_COUNT);
+    if (rc == ERR_ALLOC)
+    {
+        printf(ERR_ALLOC_MSG, RED, RESET);
+        return ERR_ALLOC;
+    }
+    
+
+    while (rc == NEED_RESTRUCT)
+    {
+        int tmp_size = get_new_table_size(hash_table->size);
+        
+
+        free_hash_table(hash_table);
+
+        rc = create_hash_table(&hash_table, CPP_KEYWORDS, CPP_HELP, KEYWORDS_COUNT, tmp_size);
+    }
 
     int key = -1;
+    int keywords_count = KEYWORDS_COUNT;
 
     balance_tree_node_t *root_node = create_keywords_balance_tree(CPP_KEYWORDS, KEYWORDS_COUNT);
     if (!root_node)
@@ -51,6 +108,7 @@ int main(void)
         {
             printf(ERR_CODE_MSG, RED, RESET);
             apply(root_node, destroy_node, NULL, FALSE);
+            free_hash_table(hash_table);
             return ERR_CODE;
         }
 
@@ -59,6 +117,7 @@ int main(void)
             case 0:
             {
                 apply(root_node, destroy_node, NULL, FALSE);
+                free_hash_table(hash_table);
                 return SUCCESS;
             }
             case 1:
@@ -78,30 +137,10 @@ int main(void)
             }
             case 2:
             {
-                // int type;
-                
-                // char buf;
-
-
-                // printf(INPUT_DETOUR_TYPE_MSG);
-                // if (fscanf(stdin, "%d%c", &type, &buf) != 2 || buf != '\n')
-                // {
-                //     printf(ERR_READING_STDIN_MSG, RED, RESET);
-                //     clear_buf(stdin);
-                //     break;
-                // }
-                // if (type < 1 || type > 3)
-                // {
-                //     printf(ERR_READING_STDIN_MSG, RED, RESET);
-                //     break;
-                // }
-
-                // if (type == 1)
-                //     apply(root_node, print_tree_node_info, stdout, TRUE, FALSE);
-                // if (type == 2)
-                //     inf_apply(root_node, print_tree_node_info, stdout);
-                // if (type == 3)
-                //     apply(root_node, print_tree_node_info, stdout, FALSE, FALSE);
+                if (!is_list_hash_table)
+                    print_hash_table(hash_table);
+                else
+                    ++keywords_count;
 
                 break;
             }

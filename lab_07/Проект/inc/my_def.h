@@ -6,10 +6,18 @@
 #define TRUE 1
 #define FALSE 0
 
-#define KEYWORDS_COUNT 20
+#define MAX_KEYWORDS_COUNT 500
+#define KEYWORDS_COUNT 23
 #define MAX_KEYWORD_LEN 15
+#define MAX_HELP_LEN 150
 
-// #define TABLE_WIDTH 55
+#define NEED_RESTRUCT -1
+
+#define TABLE_WIDTH 75
+#define INDEX_WIDTH 3
+#define KEYWORD_WIDTH MAX_KEYWORD_LEN + 3
+#define POINTER_WIDTH 10
+#define CHILD_WIDTH 9
 
 #define TREE_GRAPH_FILENAME "tree.dot"
 #define OUT_TREE_GRAPH_FILENAME "tree.png"
