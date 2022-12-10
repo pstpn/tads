@@ -32,7 +32,7 @@ typedef struct list_keyword
 
 typedef struct 
 {
-    keyword_info_t **data;
+    void *data;
     int size;
 } hash_table_t;
 

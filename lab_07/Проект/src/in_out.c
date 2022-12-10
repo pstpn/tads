@@ -44,15 +44,50 @@ void print_hash_table(hash_table_t *hash_table)
     draw_line(TABLE_WIDTH);
 
     for (int i = 0; i < hash_table->size; ++i)
-        if (hash_table->data[i]->keyword)
+        if (((keyword_info_t **) hash_table->data)[i]->keyword)
         {
             fprintf(stdout, HASH_TABLE_INFO_MSG, BLUE, PURPLE, INDEX_WIDTH,
             i, RESET, BLUE, GREEN, KEYWORD_WIDTH,
-            hash_table->data[i]->keyword, RESET, BLUE, RED, POINTER_WIDTH,
-            (void *) hash_table->data[i], RESET);
+            ((keyword_info_t **) hash_table->data)[i]->keyword, RESET, BLUE, RED, POINTER_WIDTH,
+            (void *) ((keyword_info_t **) hash_table->data)[i], RESET);
 
             draw_line(TABLE_WIDTH);
         }
+}
+
+
+void print_list_hash_table(hash_table_t *hash_table)
+{
+    draw_line(TABLE_WIDTH);
+
+    for (int i = 0; i < hash_table->size; ++i)
+    {
+        list_keyword_info_t *cur_keyword = ((list_keyword_info_t **) hash_table->data)[i];
+
+
+        if (cur_keyword)
+        {
+            fprintf(stdout, HASH_TABLE_INFO_MSG, BLUE, PURPLE, INDEX_WIDTH,
+            i, RESET, BLUE, GREEN, KEYWORD_WIDTH,
+            cur_keyword->keyword, RESET, BLUE, RED, POINTER_WIDTH,
+            (void *) cur_keyword, RESET);
+
+            draw_line(TABLE_WIDTH);
+
+            cur_keyword =  cur_keyword->next;
+        }
+
+        while (cur_keyword)
+        {
+            fprintf(stdout, CHILDS_HASH_TABLE_INFO_MSG, BLUE, PURPLE, INDEX_WIDTH - 7,
+            i, RESET, BLUE, GREEN, KEYWORD_WIDTH,
+            cur_keyword->keyword, RESET, BLUE, RED, POINTER_WIDTH,
+            (void *) cur_keyword, RESET);
+
+            draw_line(TABLE_WIDTH);
+            cur_keyword = cur_keyword->next;
+        }
+    }
 }
 
 

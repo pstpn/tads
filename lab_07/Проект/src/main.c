@@ -68,7 +68,7 @@ template to be declared, but not defined, in other translation units.",
 
     int is_list_hash_table = FALSE;
 
-    int rc = create_hash_table(&hash_table, CPP_KEYWORDS, CPP_HELP, KEYWORDS_COUNT, KEYWORDS_COUNT);
+    int rc = create_hash_table(&hash_table, CPP_KEYWORDS, CPP_HELP, KEYWORDS_COUNT, KEYWORDS_COUNT, FALSE);
     if (rc == ERR_ALLOC)
     {
         printf(ERR_ALLOC_MSG, RED, RESET);
@@ -83,7 +83,12 @@ template to be declared, but not defined, in other translation units.",
 
         free_hash_table(hash_table);
 
-        rc = create_hash_table(&hash_table, CPP_KEYWORDS, CPP_HELP, KEYWORDS_COUNT, tmp_size);
+        rc = create_hash_table(&hash_table, CPP_KEYWORDS, CPP_HELP, KEYWORDS_COUNT, tmp_size, FALSE);
+        if (rc == ERR_ALLOC)
+        {
+            printf(ERR_ALLOC_MSG, RED, RESET);
+            return ERR_ALLOC;
+        }
     }
 
     int key = -1;
@@ -101,14 +106,17 @@ template to be declared, but not defined, in other translation units.",
     
     while (key != 0)
     {
-        printf(MENU_MSG);
+        printf(MENU_MSG, (is_list_hash_table) ? OPENED_TABLE_MSG : CLOSED_TABLE_MSG);
 
         if (fscanf(stdin, "%d", &key) != 1 ||
         key < 0 || key > MENU_LEN)
         {
             printf(ERR_CODE_MSG, RED, RESET);
             apply(root_node, destroy_node, NULL, FALSE);
-            free_hash_table(hash_table);
+            if (is_list_hash_table)
+                free_list_hash_table(hash_table);
+            else
+                free_hash_table(hash_table);
             return ERR_CODE;
         }
 
@@ -117,7 +125,10 @@ template to be declared, but not defined, in other translation units.",
             case 0:
             {
                 apply(root_node, destroy_node, NULL, FALSE);
-                free_hash_table(hash_table);
+                if (is_list_hash_table)
+                    free_list_hash_table(hash_table);
+                else
+                    free_hash_table(hash_table);
                 return SUCCESS;
             }
             case 1:
@@ -140,7 +151,7 @@ template to be declared, but not defined, in other translation units.",
                 if (!is_list_hash_table)
                     print_hash_table(hash_table);
                 else
-                    ++keywords_count;
+                    print_list_hash_table(hash_table);
 
                 break;
             }
@@ -294,7 +305,7 @@ template to be declared, but not defined, in other translation units.",
 
                 break;
             }
-            case 7:
+            case 8:
             {
                 // measurement_table measures[MEAS_COUNT] = { 0 };
 
@@ -306,6 +317,69 @@ template to be declared, but not defined, in other translation units.",
                 // }
 
                 // print_measures(measures, MEAS_COUNT);
+
+                break;
+            }
+            case 7:
+            {
+                if (is_list_hash_table)
+                {
+                    free_list_hash_table(hash_table);
+
+                    int rc = create_hash_table(&hash_table, CPP_KEYWORDS, CPP_HELP, keywords_count, KEYWORDS_COUNT, FALSE);
+                    if (rc == ERR_ALLOC)
+                    {
+                        printf(ERR_ALLOC_MSG, RED, RESET);
+                        return ERR_ALLOC;
+                    }
+                    
+
+                    while (rc == NEED_RESTRUCT)
+                    {
+                        int tmp_size = get_new_table_size(hash_table->size);
+                        
+
+                        free_hash_table(hash_table);
+
+                        rc = create_hash_table(&hash_table, CPP_KEYWORDS, CPP_HELP, keywords_count, tmp_size, FALSE);
+                        if (rc == ERR_ALLOC)
+                        {
+                            printf(ERR_ALLOC_MSG, RED, RESET);
+                            return ERR_ALLOC;
+                        }
+                    }
+                }
+                else
+                {
+                    free_hash_table(hash_table);
+
+                    int rc = create_hash_table(&hash_table, CPP_KEYWORDS, CPP_HELP, keywords_count, KEYWORDS_COUNT, TRUE);
+                    if (rc == ERR_ALLOC)
+                    {
+                        printf(ERR_ALLOC_MSG, RED, RESET);
+                        return ERR_ALLOC;
+                    }
+                    
+
+                    while (rc == NEED_RESTRUCT)
+                    {
+                        int tmp_size = get_new_table_size(hash_table->size);
+                        
+
+                        free_list_hash_table(hash_table);
+
+                        rc = create_hash_table(&hash_table, CPP_KEYWORDS, CPP_HELP, keywords_count, tmp_size, TRUE);
+                        if (rc == ERR_ALLOC)
+                        {
+                            printf(ERR_ALLOC_MSG, RED, RESET);
+                            return ERR_ALLOC;
+                        }
+                    }
+                }
+
+                is_list_hash_table = (is_list_hash_table) ? FALSE : TRUE;
+
+                printf(CHANGE_HASH_MSG, GREEN, (is_list_hash_table) ? OPENED_TABLE_MSG : CLOSED_TABLE_MSG, RESET);
 
                 break;
             }

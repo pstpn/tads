@@ -1,7 +1,7 @@
 #ifndef ___MY_DEF___
 #define ___MY_DEF___
 
-#define MENU_LEN 6
+#define MENU_LEN 7
 
 #define TRUE 1
 #define FALSE 0
@@ -13,8 +13,8 @@
 
 #define NEED_RESTRUCT -1
 
-#define TABLE_WIDTH 75
-#define INDEX_WIDTH 3
+#define TABLE_WIDTH 82
+#define INDEX_WIDTH 10
 #define KEYWORD_WIDTH MAX_KEYWORD_LEN + 3
 #define POINTER_WIDTH 10
 #define CHILD_WIDTH 9
