@@ -1,4 +1,7 @@
+#define _GNU_SOURCE
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 #include "my_types.h"
 #include "my_def.h"
@@ -6,18 +9,22 @@
 #include "my_err.h"
 
 
-// int get_in_elem(FILE *f, char *elem)
-// {
-//     char buf;
+int get_in_elem(FILE *f, char **word)
+{
+    size_t init_size = MAX_KEYWORD_LEN + 1;
 
+    int count = getline(word, &init_size, f);
+    if ((*word)[strlen(*word) - 1] == '\n')
+        (*word)[strlen(*word) - 1] = '\0';
 
-//     if (fscanf(f, "%c%c", elem, &buf) != 2)
-//         return ERR_READING;
-//     if (buf != '\n')
-//         return ERR_READING;
+    if (count < 0 || count - 1 > MAX_KEYWORD_LEN)
+    {
+        free(*word);
+        return ERR_READING;
+    }
 
-//     return SUCCESS;
-// }
+    return SUCCESS;
+}
 
 
 void clear_buf(FILE *f)

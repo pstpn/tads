@@ -5,14 +5,16 @@
 #define INFO_MSG "\n- Формат входных данных: пункт меню (от 0 до 6)\n\n\
 - Операции, производимые программой: указаны с пунктах меню\n\n\
 - Формат выходных данных: экземпляр сбалансированного дерева и хеш-таблица\n\n"
-#define INPUT_ELEM_MSG "\nВведите слово, которое Вы хотите добавить в хеш-таблицу (до 15 символов): "
+#define INPUT_ELEM_MSG "\nВведите ключевое слово, которое Вы хотите добавить в хеш-таблицу (до 15 символов): "
 #define HASH_TABLE_INFO_MSG "\
 |%sINDEX: %s%*d    %s|%sKEYWORD: %s%*s       %s|%sADDRESS: %s%*p%s|\n"
 #define CHILDS_HASH_TABLE_INFO_MSG "\
 |%sPARENT_INDEX: %s%*d    %s|%sKEYWORD: %s%*s       %s|%sADDRESS: %s%*p%s|\n"
+#define HELP_MSG "\n%sВведенное слово: \"%s\"\n\nПодсказка по данному слову:\n\n%s\"%s\"%s\n"
 #define ERR_ALLOC_MSG "\n%sНе удалось выделить память. Попробуйте снова.%s\n\n"
 #define ERR_CODE_MSG "\n%sНекорректный код. Попробуйте снова.%s\n\n"
 #define ERR_READING_STDIN_MSG "\n%sНе удалось получить элемент. Попробуйте снова.%s\n\n"
+#define ERR_FINDIND_MSG "\n%sНе удалось найти подсказку по данному слову. Попробуйте снова.%s\n\n"
 #define ERR_MEASURES_MSG "\n%sНе удалось произвести замерный эксперимент. Попробуйте снова.%s\n\n"
 #define OPENED_TABLE_MSG "открытое"
 #define CLOSED_TABLE_MSG "закрытое"

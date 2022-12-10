@@ -6,7 +6,7 @@
 #include "my_types.h"
 
 
-// int get_in_elem(FILE *f, char *elem);
+int get_in_elem(FILE *f, char **word);
 void clear_buf(FILE *f);
 void draw_line(int len);
 void print_hash_table(hash_table_t *hash_table);

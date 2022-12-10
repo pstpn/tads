@@ -52,11 +52,11 @@ void free_list_hash_table(hash_table_t *hash_table)
 }
 
 
-int fix_collision(hash_table_t **hash_table, keyword_info_t *keyword, int cur_index, int k_count)
+int fix_collision(hash_table_t **hash_table, keyword_info_t *keyword, int cur_index, int table_size)
 {
     for (int i = 0, step = 1; i < 4; ++i)
     {
-        if (cur_index + step >= k_count)
+        if (cur_index + step * step >= table_size)
         {
             cur_index = -1;
             step = 1;
@@ -66,7 +66,7 @@ int fix_collision(hash_table_t **hash_table, keyword_info_t *keyword, int cur_in
             ++step;
         else
         {
-            ((keyword_info_t **) (*hash_table)->data)[cur_index + step] = keyword;
+            ((keyword_info_t **) (*hash_table)->data)[cur_index + step * step] = keyword;
             return SUCCESS;
         }
     }
@@ -91,7 +91,7 @@ int fix_list_collision(hash_table_t **hash_table, list_keyword_info_t *keyword, 
 }
 
 
-int insert_in_hash_table(hash_table_t **hash_table, char *keyword, char *help, int k_count, int table_size)
+int insert_in_hash_table(hash_table_t **hash_table, char *keyword, char *help, int table_size)
 {
     keyword_info_t *cur_keyword_info = malloc(sizeof(keyword_info_t));
     if (!cur_keyword_info)
@@ -109,7 +109,7 @@ int insert_in_hash_table(hash_table_t **hash_table, char *keyword, char *help, i
     if (!((keyword_info_t **) (*hash_table)->data)[cur_index]->keyword)
         ((keyword_info_t **) (*hash_table)->data)[cur_index] = cur_keyword_info;
     else
-        if (fix_collision(hash_table, cur_keyword_info, cur_index, k_count) == NEED_RESTRUCT)
+        if (fix_collision(hash_table, cur_keyword_info, cur_index, table_size) == NEED_RESTRUCT)
             return NEED_RESTRUCT;
         
     return SUCCESS;
@@ -169,7 +169,7 @@ char (*help)[MAX_HELP_LEN + 1], int k_count, int table_size, int is_list_table)
         if (is_list_table)
             rc = insert_in_list_hash_table(hash_table, keywords[i], help[i], table_size);
         else
-            rc = insert_in_hash_table(hash_table, keywords[i], help[i], k_count, table_size);
+            rc = insert_in_hash_table(hash_table, keywords[i], help[i], table_size);
 
         if (rc == ERR_ALLOC)
             return ERR_ALLOC;
@@ -178,4 +178,46 @@ char (*help)[MAX_HELP_LEN + 1], int k_count, int table_size, int is_list_table)
     }
 
     return SUCCESS;
+}
+
+
+int find_keyword(hash_table_t *hash_table, char *keyword)
+{
+    unsigned int cur_index = hash_func(keyword, hash_table->size);
+
+
+    for (int i = 0, step = 0; i < 5; ++i)
+    {
+        if ((int) cur_index + step * step >= hash_table->size)
+        {
+            cur_index = -1;
+            step = 1;
+        }
+
+        if (((keyword_info_t **) hash_table->data)[cur_index + step * step]->keyword &&
+            strcmp(((keyword_info_t **) hash_table->data)[cur_index + step * step]->keyword, keyword))
+            ++step;
+        else if (((keyword_info_t **) hash_table->data)[cur_index + step * step]->keyword)
+            return (int) cur_index + step * step;
+    }
+
+    return -1;
+}
+
+
+int find_list_keyword(hash_table_t *hash_table, char *keyword)
+{
+    unsigned int cur_index = hash_func(keyword, hash_table->size);
+
+    list_keyword_info_t *cur_keyword = ((list_keyword_info_t **) hash_table->data)[cur_index];
+
+
+    for (int i = 0; i < 3; ++i, cur_keyword = cur_keyword->next)
+        if (!cur_keyword->next)
+        {
+            cur_keyword->next = keyword;
+            return SUCCESS;
+        }
+
+    return -1;
 }

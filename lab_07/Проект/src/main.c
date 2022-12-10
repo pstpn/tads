@@ -157,31 +157,47 @@ template to be declared, but not defined, in other translation units.",
             }
             case 3:
             {
-                // clear_buf(stdin);
+                clear_buf(stdin);
 
-                // char elem;
+                char *word = NULL;
 
 
-                // printf(INPUT_ELEM_MSG);
+                printf(INPUT_ELEM_MSG);
 
-                // if (get_in_elem(stdin, &elem))
-                // {
-                //     printf(ERR_READING_STDIN_MSG, RED, RESET);
-                //     clear_buf(stdin);
-                //     break;
-                // }
+                if (get_in_elem(stdin, &word))
+                {
+                    printf(ERR_READING_STDIN_MSG, RED, RESET);
+                    break;
+                }
                 
-                // tree_node_t *new_node = create_node(count++, elem);
-                // if (!new_node)
-                // {
-                //     printf(ERR_ALLOC_MSG, RED, RESET);
-                //     apply(root_node, destroy_node, NULL, FALSE, FALSE);
-                //     return ERR_ALLOC;
-                // }
+                if (!is_list_hash_table)
+                {
+                    int f_index = find_keyword(hash_table, word);
+                    if (f_index < 0)
+                    {
+                        printf(ERR_FINDIND_MSG, RED, RESET);
+                        free(word);
+                        break;
+                    }
 
-                // root_node = insert(root_node, new_node);
+                    printf(HELP_MSG, GREEN, ((keyword_info_t **) hash_table->data)[f_index]->keyword,
+                        PURPLE, ((keyword_info_t **) hash_table->data)[f_index]->help, RESET);
+                }
+                else
+                {
+                    int f_index = find_list_keyword(hash_table, word);
+                    if (f_index < 0)
+                    {
+                        printf(ERR_FINDIND_MSG, RED, RESET);
+                        free(word);
+                        break;
+                    }
 
-                // printf(SUCCESSFULLY_ADD_MSG, GREEN, RESET);
+                    printf(HELP_MSG, GREEN, ((keyword_info_t **) hash_table->data)[f_index]->keyword,
+                        PURPLE, ((keyword_info_t **) hash_table->data)[f_index]->help, RESET);
+                }
+
+                free(word);
 
                 break;
             }
