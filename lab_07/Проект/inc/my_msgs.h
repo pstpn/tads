@@ -29,6 +29,7 @@
 5  --  Сравнить время поиска и кол-во сравнений для различных размерностей таблицы\n\
 6  --  Изменить тип хеширования (текущий: %s)\n\
 0  --  Выход\n: "
+#define COUNT_MEASURES_MSG "\n%sКоличество запусков для каждого типа: %d%s\n"
 #define MEASURE_TABLE_MSG "%s|  TYPE  | TIME / MEM (10 elems, mcs) | TIME / MEM (50 elems, mcs) | TIME / MEM (100 elems, mcs)|%s\n"
 
 #endif // ___MY_MSGS___

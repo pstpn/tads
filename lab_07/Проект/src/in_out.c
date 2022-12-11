@@ -100,6 +100,8 @@ void print_list_hash_table(hash_table_t *hash_table)
 
 void print_measures(measurement_table *table, int len)
 {
+    printf(COUNT_MEASURES_MSG, PURPLE, 10000, RESET);
+
     draw_line(MEAS_TABLE_WIDTH);
     printf(MEASURE_TABLE_MSG, BLUE, RESET);
     draw_line(MEAS_TABLE_WIDTH);

@@ -9,16 +9,28 @@
 
 unsigned int hash_func(const char *str, unsigned int table_len)
 {
-    unsigned int hash = 0;
+    unsigned long hash = 5381;
+    // unsigned long hash = 0;
+    int c;
 
-
-    for(; *str; ++str)
+    while (*str)
     {
-        hash += (unsigned char) (*str);
-        hash -= (hash << 13) | (hash >> 19);
+        c = *(str++);
+        hash = hash * 33 + c;
     }
 
-    return hash % table_len;
+	// return hash;
+
+    // for(; *str; ++str)
+    // {
+    //     hash += (unsigned char) (*str);
+    //     hash -= (hash << 13) | (hash >> 19);
+    // }
+
+    // for (int i = 0; str[i] != '\0'; ++i)
+    //     hash += str[i];
+
+    return (hash) % table_len;
 }
 
 
@@ -54,7 +66,7 @@ void free_list_hash_table(hash_table_t *hash_table)
 
 int fix_collision(hash_table_t **hash_table, keyword_info_t *keyword, int cur_index, int table_size)
 {
-    for (int i = 0, step = 1; i < 3; ++i)
+    for (int i = 0, step = 1; i < 2; ++i)
     {
         if (cur_index + step * step >= table_size)
         {
@@ -80,7 +92,7 @@ int fix_list_collision(hash_table_t **hash_table, list_keyword_info_t *keyword, 
     list_keyword_info_t *cur_keyword = ((list_keyword_info_t **) (*hash_table)->data)[cur_index];
 
 
-    for (int i = 0; i < 3; ++i, cur_keyword = cur_keyword->next)
+    for (int i = 0; i < 2; ++i, cur_keyword = cur_keyword->next)
         if (!cur_keyword->next)
         {
             cur_keyword->next = keyword;
@@ -186,7 +198,7 @@ int find_keyword(hash_table_t *hash_table, char *keyword)
     unsigned int cur_index = hash_func(keyword, hash_table->size);
 
 
-    for (int i = 0, step = 0; i < 4; ++i)
+    for (int i = 0, step = 0; i < 3; ++i)
     {
         if ((int) cur_index + step * step >= hash_table->size)
         {
@@ -212,7 +224,7 @@ list_keyword_info_t *find_list_keyword(hash_table_t *hash_table, char *keyword)
     list_keyword_info_t *cur_keyword = ((list_keyword_info_t **) hash_table->data)[cur_index];
 
 
-    for (int i = 0; i < 4 && cur_keyword; ++i, cur_keyword = cur_keyword->next)
+    for (int i = 0; i < 3 && cur_keyword; ++i, cur_keyword = cur_keyword->next)
         if (!strcmp(cur_keyword->keyword, keyword))
             return cur_keyword;
 
