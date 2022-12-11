@@ -4,6 +4,14 @@
 #include "my_def.h"
 
 
+typedef struct tree_node
+{
+    char *value;
+
+    struct tree_node *left;
+    struct tree_node *right;
+} tree_node_t;
+
 typedef struct balance_tree_node
 {    
     char *keyword;
@@ -37,11 +45,12 @@ typedef struct
 } hash_table_t;
 
 
-// typedef struct measure
-// {
-//     long long unsigned time;
-//     int branching;
-//     int mem;
-// } measurement_table;
+typedef struct measure
+{
+    long long unsigned time;
+    char type;
+    int count;
+    int mem;
+} measurement_table;
 
 #endif // ___MY_TYPES___

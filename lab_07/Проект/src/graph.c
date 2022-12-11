@@ -28,7 +28,7 @@ void export_to_dot(FILE *f, const char *tree_name, void *root_node)
 {
     fprintf(f, "digraph %s {\n", tree_name);
 
-    apply(root_node, tree_to_dot, f, TRUE);
+    b_apply(root_node, tree_to_dot, f, TRUE);
 
     fprintf(f, "}\n");
 }

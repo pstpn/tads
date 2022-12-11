@@ -6,7 +6,7 @@
 #include "my_err.h"
 
 
-balance_tree_node_t *create_node(char *keyword)
+balance_tree_node_t *b_create_node(char *keyword)
 {
     balance_tree_node_t *node = malloc(sizeof(balance_tree_node_t));
 
@@ -103,7 +103,7 @@ balance_tree_node_t *balance_tree(balance_tree_node_t *tree)
 }
 
 
-balance_tree_node_t *insert(balance_tree_node_t *tree, balance_tree_node_t *node)
+balance_tree_node_t *b_insert(balance_tree_node_t *tree, balance_tree_node_t *node)
 {
     if (tree == NULL)
         return node;
@@ -113,13 +113,13 @@ balance_tree_node_t *insert(balance_tree_node_t *tree, balance_tree_node_t *node
 
     if (cmp > 0)
     {
-        tree->left = insert(tree->left, node);
+        tree->left = b_insert(tree->left, node);
 
         tree = balance_tree(tree);
     }
     else if (cmp < 0)
     {
-        tree->right = insert(tree->right, node);
+        tree->right = b_insert(tree->right, node);
 
         tree = balance_tree(tree);
     }
@@ -133,7 +133,7 @@ balance_tree_node_t *insert(balance_tree_node_t *tree, balance_tree_node_t *node
 }
 
 
-void apply(void *tree, void (*f)(void *, void *), void *arg, int is_pre)
+void b_apply(void *tree, void (*f)(void *, void *), void *arg, int is_pre)
 {
     if (tree == NULL)
         return;
@@ -141,15 +141,15 @@ void apply(void *tree, void (*f)(void *, void *), void *arg, int is_pre)
     if (is_pre)
         f(tree, arg);
 
-    apply((void *) ((balance_tree_node_t *) tree)->left, f, arg, is_pre);
-    apply((void *) ((balance_tree_node_t *) tree)->right, f, arg, is_pre);
+    b_apply((void *) ((balance_tree_node_t *) tree)->left, f, arg, is_pre);
+    b_apply((void *) ((balance_tree_node_t *) tree)->right, f, arg, is_pre);
 
     if (!is_pre)
         f(tree, arg);
 }
 
 
-void destroy_node(void *node, void *trash)
+void b_destroy_node(void *node, void *trash)
 {
     if (!trash)
         free(node);
@@ -163,16 +163,40 @@ balance_tree_node_t *create_keywords_balance_tree(char (*keywords)[MAX_KEYWORD_L
 
     for (int i = 0; i < count; ++i)
     {
-        balance_tree_node_t *cur_node = create_node(keywords[i]);
+        balance_tree_node_t *cur_node = b_create_node(keywords[i]);
         if (!cur_node)
         {
-            apply(root_node, destroy_node, NULL, FALSE);
+            b_apply(root_node, b_destroy_node, NULL, FALSE);
             return NULL;
         }
 
 
-        root_node = insert(root_node, cur_node);
+        root_node = b_insert(root_node, cur_node);
     }
 
     return root_node;
+}
+
+
+balance_tree_node_t *b_find_tree_node(balance_tree_node_t *tree, char *cur_word, int *stop_finding)
+{
+    if (!tree)
+        return NULL;
+
+    int cmp = strcmp(tree->keyword, cur_word);
+
+    balance_tree_node_t *f_tree_node = NULL;
+
+
+    if (!cmp)
+    {
+        *stop_finding = TRUE;
+        return tree;
+    }
+    else if (cmp > 0 && tree->left && !(*stop_finding))
+        f_tree_node = b_find_tree_node(tree->left, cur_word, stop_finding);
+    else if (tree->right && !(*stop_finding))
+        f_tree_node = b_find_tree_node(tree->right, cur_word, stop_finding);
+
+    return f_tree_node;
 }

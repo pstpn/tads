@@ -1,7 +1,7 @@
 #ifndef ___MY_DEF___
 #define ___MY_DEF___
 
-#define MENU_LEN 7
+#define MENU_LEN 6
 
 #define TRUE 1
 #define FALSE 0
@@ -41,8 +41,11 @@
 #define MAKE_OUT_FILE_TREE_GRAPH_COMMAND "dot -Tpng out_file_tree.dot -o out_file_tree.png"
 #define OPEN_OUT_FILE_TREE_PNG_COMMAND "xdg-open out_file_tree.png"
 
-// #define MEAS_COUNT 25
-// #define MEAS_TABLE_WIDTH 177
+#define MEAS_COUNT 9
+#define MEAS_TABLE_WIDTH 97
+
+#define FIRST_FIELD_WIDTH 8
+#define SECOND_FIELD_WIDTH 21
 
 #define RESET "\033[0m"
 #define RED "\033[1;31m"

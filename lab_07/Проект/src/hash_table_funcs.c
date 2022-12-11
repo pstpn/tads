@@ -54,7 +54,7 @@ void free_list_hash_table(hash_table_t *hash_table)
 
 int fix_collision(hash_table_t **hash_table, keyword_info_t *keyword, int cur_index, int table_size)
 {
-    for (int i = 0, step = 1; i < 4; ++i)
+    for (int i = 0, step = 1; i < 3; ++i)
     {
         if (cur_index + step * step >= table_size)
         {
@@ -186,7 +186,7 @@ int find_keyword(hash_table_t *hash_table, char *keyword)
     unsigned int cur_index = hash_func(keyword, hash_table->size);
 
 
-    for (int i = 0, step = 0; i < 5; ++i)
+    for (int i = 0, step = 0; i < 4; ++i)
     {
         if ((int) cur_index + step * step >= hash_table->size)
         {
@@ -205,19 +205,16 @@ int find_keyword(hash_table_t *hash_table, char *keyword)
 }
 
 
-int find_list_keyword(hash_table_t *hash_table, char *keyword)
+list_keyword_info_t *find_list_keyword(hash_table_t *hash_table, char *keyword)
 {
     unsigned int cur_index = hash_func(keyword, hash_table->size);
 
     list_keyword_info_t *cur_keyword = ((list_keyword_info_t **) hash_table->data)[cur_index];
 
 
-    for (int i = 0; i < 3; ++i, cur_keyword = cur_keyword->next)
-        if (!cur_keyword->next)
-        {
-            cur_keyword->next = keyword;
-            return SUCCESS;
-        }
+    for (int i = 0; i < 4 && cur_keyword; ++i, cur_keyword = cur_keyword->next)
+        if (!strcmp(cur_keyword->keyword, keyword))
+            return cur_keyword;
 
-    return -1;
+    return NULL;
 }

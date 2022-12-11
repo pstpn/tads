@@ -9,15 +9,15 @@
 #include "my_err.h"
 
 
-int get_in_elem(FILE *f, char **word)
+int get_in_elem(FILE *f, char **word, int max_len)
 {
-    size_t init_size = MAX_KEYWORD_LEN + 1;
+    size_t init_size = max_len + 1;
 
     int count = getline(word, &init_size, f);
     if ((*word)[strlen(*word) - 1] == '\n')
         (*word)[strlen(*word) - 1] = '\0';
 
-    if (count < 0 || count - 1 > MAX_KEYWORD_LEN)
+    if (count < 0 || count - 1 > max_len)
     {
         free(*word);
         return ERR_READING;
@@ -98,20 +98,18 @@ void print_list_hash_table(hash_table_t *hash_table)
 }
 
 
-// void print_measures(measurement_table *table, int len)
-// {
-//     draw_line(MEAS_TABLE_WIDTH);
-//     printf(MEASURE_TABLE_MSG, BLUE, RESET);
-//     draw_line(MEAS_TABLE_WIDTH);
+void print_measures(measurement_table *table, int len)
+{
+    draw_line(MEAS_TABLE_WIDTH);
+    printf(MEASURE_TABLE_MSG, BLUE, RESET);
+    draw_line(MEAS_TABLE_WIDTH);
 
-//     for (int i = 0; i < len; i += 5)
-//         printf("|%*d|%*llu     / %*d |%*llu     / %*d |%*llu     / %*d |%*llu     / %*d |%*llu     / %*d |\n",
-//             FIRST_FIELD_WIDTH, table[i].branching, SECOND_FIELD_WIDTH / 2, table[i].time,
-//             SECOND_FIELD_WIDTH / 2, table[i].mem, SECOND_FIELD_WIDTH / 2, table[i + 1].time,
-//             SECOND_FIELD_WIDTH / 2 + 1, table[i + 1].mem, SECOND_FIELD_WIDTH / 2, table[i + 2].time,
-//             SECOND_FIELD_WIDTH / 2 + 1, table[i + 2].mem, SECOND_FIELD_WIDTH / 2, table[i + 3].time,
-//             SECOND_FIELD_WIDTH / 2 + 1, table[i + 3].mem, SECOND_FIELD_WIDTH / 2 + 1, table[i + 4].time,
-//             SECOND_FIELD_WIDTH / 2 + 1, table[i + 4].mem);
+    for (int i = 0; i < len; i += 3)
+        printf("|%*c|%*llu     / %*d |%*llu     / %*d |%*llu     / %*d |\n",
+            FIRST_FIELD_WIDTH, table[i].type, SECOND_FIELD_WIDTH / 2, table[i].time,
+            SECOND_FIELD_WIDTH / 2, table[i].mem, SECOND_FIELD_WIDTH / 2, table[i + 1].time,
+            SECOND_FIELD_WIDTH / 2, table[i + 1].mem, SECOND_FIELD_WIDTH / 2, table[i + 2].time,
+            SECOND_FIELD_WIDTH / 2, table[i + 2].mem);
     
-//     draw_line(MEAS_TABLE_WIDTH);
-// }
+    draw_line(MEAS_TABLE_WIDTH);
+}
