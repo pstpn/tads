@@ -226,7 +226,7 @@ list_keyword_info_t *find_list_keyword(hash_table_t *hash_table, char *keyword, 
     list_keyword_info_t *cur_keyword = ((list_keyword_info_t **) hash_table->data)[cur_index];
 
 
-    for (int i = 0; i < 2 && cur_keyword; ++i, cur_keyword = cur_keyword->next)
+    for (int i = 0; i < 4 && cur_keyword; ++i, cur_keyword = cur_keyword->next)
     {
         ++(*cmp_count);
 

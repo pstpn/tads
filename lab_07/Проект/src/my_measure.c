@@ -165,6 +165,7 @@ int get_measures(measurement_table table[MEAS_COUNT])
 
         hash_table_t *hash_table = NULL;
 
+        // int is_list_hash_table = FALSE;
         int is_list_hash_table = TRUE;
 
         int tmp_size = get_new_table_size(counts[j]);
@@ -179,12 +180,14 @@ int get_measures(measurement_table table[MEAS_COUNT])
             tmp_size = get_new_table_size(hash_table->size);
             
 
+            // free_hash_table(hash_table);
             free_list_hash_table(hash_table);
 
             rc = create_hash_table(&hash_table, CPP_KEYWORDS, CPP_HELP, counts[j], tmp_size, is_list_hash_table);
         }
 
         for (int k = 0; k < counts[j]; ++k)
+            // find_keyword(hash_table, CPP_KEYWORDS[k], &cmp_count);
             find_list_keyword(hash_table, CPP_KEYWORDS[k], &cmp_count);
 
         table[6 + j].avg_cmp_count = cmp_count / counts[j];
@@ -193,16 +196,18 @@ int get_measures(measurement_table table[MEAS_COUNT])
         beg = microseconds_now();
 
         for (int k = 0; k < 10000; ++k)
+            // find_keyword(hash_table, CPP_KEYWORDS[f_ind], &cmp_count);
             find_list_keyword(hash_table, CPP_KEYWORDS[f_ind], &cmp_count);
 
         end = microseconds_now();
 
         table[6 + j].time = end - beg;
         table[6 + j].type = 'h';
+        // table[6 + j].mem = sizeof(hash_table_t) + sizeof(keyword_info_t) * counts[j];
         table[6 + j].mem = sizeof(hash_table_t) + sizeof(list_keyword_info_t) * counts[j];
         table[6 + j].count = counts[j];
 
-        free_list_hash_table(hash_table);
+        free_hash_table(hash_table);
     }
     
     return SUCCESS;
