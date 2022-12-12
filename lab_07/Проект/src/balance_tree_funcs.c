@@ -178,7 +178,7 @@ balance_tree_node_t *create_keywords_balance_tree(char (*keywords)[MAX_KEYWORD_L
 }
 
 
-balance_tree_node_t *b_find_tree_node(balance_tree_node_t *tree, char *cur_word, int *stop_finding)
+balance_tree_node_t *b_find_tree_node(balance_tree_node_t *tree, char *cur_word, int *stop_finding, int *cmp_count)
 {
     if (!tree)
         return NULL;
@@ -188,15 +188,17 @@ balance_tree_node_t *b_find_tree_node(balance_tree_node_t *tree, char *cur_word,
     balance_tree_node_t *f_tree_node = NULL;
 
 
+    ++(*cmp_count);
+
     if (!cmp)
     {
         *stop_finding = TRUE;
         return tree;
     }
     else if (cmp > 0 && tree->left && !(*stop_finding))
-        f_tree_node = b_find_tree_node(tree->left, cur_word, stop_finding);
+        f_tree_node = b_find_tree_node(tree->left, cur_word, stop_finding, cmp_count);
     else if (tree->right && !(*stop_finding))
-        f_tree_node = b_find_tree_node(tree->right, cur_word, stop_finding);
+        f_tree_node = b_find_tree_node(tree->right, cur_word, stop_finding, cmp_count);
 
     return f_tree_node;
 }

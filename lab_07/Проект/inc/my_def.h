@@ -42,10 +42,10 @@
 #define OPEN_OUT_FILE_TREE_PNG_COMMAND "xdg-open out_file_tree.png"
 
 #define MEAS_COUNT 9
-#define MEAS_TABLE_WIDTH 97
+#define MEAS_TABLE_WIDTH 146
 
 #define FIRST_FIELD_WIDTH 8
-#define SECOND_FIELD_WIDTH 21
+#define SECOND_FIELD_WIDTH 51
 
 #define RESET "\033[0m"
 #define RED "\033[1;31m"

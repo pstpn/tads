@@ -76,7 +76,7 @@ int get_measures(measurement_table table[MEAS_COUNT])
         int f_ind = counts[j] - 2;
         // int f_ind = counts[j] / 2 - 2;
 
-        int stop_finding = FALSE;
+        int stop_finding;
 
 
         for (int i = 0; i < counts[j]; ++i)
@@ -87,11 +87,26 @@ int get_measures(measurement_table table[MEAS_COUNT])
             root_node = insert(root_node, c_node);
         }
 
+        int cmp_count = 0;
+
+
+        for (int k = 0; k < counts[j]; ++k)
+        {
+            stop_finding = FALSE;
+
+            find_tree_node(root_node, CPP_KEYWORDS[k], &stop_finding, &cmp_count);
+        }
+
+        table[j].avg_cmp_count = cmp_count / counts[j];
 
         beg = microseconds_now();
 
         for (int k = 0; k < 10000; ++k)
-            find_tree_node(root_node, CPP_KEYWORDS[f_ind], &stop_finding);
+        {
+            stop_finding = FALSE;
+
+            find_tree_node(root_node, CPP_KEYWORDS[f_ind], &stop_finding, &cmp_count);
+        }
 
         end = microseconds_now();
 
@@ -108,15 +123,30 @@ int get_measures(measurement_table table[MEAS_COUNT])
         int f_ind = counts[j] - 2;
         // int f_ind = counts[j] / 2 - 2;
 
-        int stop_finding = FALSE;
+        int stop_finding;
 
         balance_tree_node_t *root_node = create_keywords_balance_tree(CPP_KEYWORDS, counts[j]);
 
+        int cmp_count = 0;
+
+
+        for (int k = 0; k < counts[j]; ++k)
+        {
+            stop_finding = FALSE;
+
+            b_find_tree_node(root_node, CPP_KEYWORDS[k], &stop_finding, &cmp_count);
+        }
+
+        table[3 + j].avg_cmp_count = cmp_count / counts[j];
 
         beg = microseconds_now();
 
         for (int k = 0; k < 10000; ++k)
-            b_find_tree_node(root_node, CPP_KEYWORDS[f_ind], &stop_finding);
+        {
+            stop_finding = FALSE;
+
+            b_find_tree_node(root_node, CPP_KEYWORDS[f_ind], &stop_finding, &cmp_count);
+        }
 
         end = microseconds_now();
 
@@ -140,6 +170,8 @@ int get_measures(measurement_table table[MEAS_COUNT])
         int tmp_size = get_new_table_size(counts[j]);
 
         int rc = create_hash_table(&hash_table, CPP_KEYWORDS, CPP_HELP, counts[j], tmp_size, is_list_hash_table);
+
+        int cmp_count = 0;
         
 
         while (rc == NEED_RESTRUCT)
@@ -152,11 +184,16 @@ int get_measures(measurement_table table[MEAS_COUNT])
             rc = create_hash_table(&hash_table, CPP_KEYWORDS, CPP_HELP, counts[j], tmp_size, is_list_hash_table);
         }
 
+        for (int k = 0; k < counts[j]; ++k)
+            find_list_keyword(hash_table, CPP_KEYWORDS[k], &cmp_count);
+
+        table[6 + j].avg_cmp_count = cmp_count / counts[j];
+
 
         beg = microseconds_now();
 
         for (int k = 0; k < 10000; ++k)
-            find_list_keyword(hash_table, CPP_KEYWORDS[f_ind]);
+            find_list_keyword(hash_table, CPP_KEYWORDS[f_ind], &cmp_count);
 
         end = microseconds_now();
 

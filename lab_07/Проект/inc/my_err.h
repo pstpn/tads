@@ -4,8 +4,6 @@
 #define SUCCESS 0
 #define ERR_CODE 1
 #define ERR_ALLOC 2
-#define ERR_EMPTY_TREE 3
-#define ERR_READING 4
-#define ERR_VALUE 5
+#define ERR_READING 3
 
 #endif // ___MY_ERR___

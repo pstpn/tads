@@ -14,7 +14,7 @@ int insert_in_hash_table(hash_table_t **hash_table, char *keyword, char *help, i
 int insert_in_list_hash_table(hash_table_t **hash_table, char *keyword, char *help, int table_size);
 int create_hash_table(hash_table_t **hash_table, char (*keywords)[MAX_KEYWORD_LEN + 1],
                       char (*help)[MAX_HELP_LEN + 1], int k_count, int table_size, int is_list_table);
-int find_keyword(hash_table_t *hash_table, char *keyword);
-list_keyword_info_t *find_list_keyword(hash_table_t *hash_table, char *keyword);
+int find_keyword(hash_table_t *hash_table, char *keyword, int *cmp_count);
+list_keyword_info_t *find_list_keyword(hash_table_t *hash_table, char *keyword, int *cmp_count);
 
 #endif // ___MY_HASH_FUNCS___

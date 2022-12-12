@@ -12,7 +12,7 @@
 |%sINDEX: %s%*d    %s|%sKEYWORD: %s%*s       %s|%sADDRESS: %s%*p%s|\n"
 #define CHILDS_HASH_TABLE_INFO_MSG "\
 |%sPARENT_INDEX: %s%*d    %s|%sKEYWORD: %s%*s       %s|%sADDRESS: %s%*p%s|\n"
-#define HELP_MSG "\n%sВведенное слово: \"%s\"\n\nПодсказка по данному слову:\n\n%s\"%s\"%s\n"
+#define HELP_MSG "\n%sВведенное слово: \"%s\"\nКоличество сравнений: %d\nПодсказка по данному слову:\n\n%s\"%s\"%s\n"
 #define ERR_ALLOC_MSG "\n%sНе удалось выделить память. Попробуйте снова.%s\n\n"
 #define ERR_CODE_MSG "\n%sНекорректный код. Попробуйте снова.%s\n\n"
 #define ERR_READING_STDIN_MSG "\n%sНе удалось получить элемент. Попробуйте снова.%s\n\n"
@@ -30,6 +30,7 @@
 6  --  Изменить тип хеширования (текущий: %s)\n\
 0  --  Выход\n: "
 #define COUNT_MEASURES_MSG "\n%sКоличество запусков для каждого типа: %d%s\n"
-#define MEASURE_TABLE_MSG "%s|  TYPE  | TIME / MEM (10 elems, mcs) | TIME / MEM (50 elems, mcs) | TIME / MEM (100 elems, mcs)|%s\n"
+#define MEASURE_TABLE_MSG "%s|  TYPE  | TIME / MEM (10 elems, mcs) / AVG_CMP_COUNT | \
+TIME / MEM (50 elems, mcs) / AVG_CMP_COUNT | TIME / MEM (100 elems, mcs) / AVG_CMP_COUNT |%s\n"
 
 #endif // ___MY_MSGS___

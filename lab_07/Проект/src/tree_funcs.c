@@ -49,7 +49,7 @@ tree_node_t *insert(tree_node_t *tree, tree_node_t *node)
 }
 
 
-tree_node_t *find_tree_node(tree_node_t *tree, char *cur_word, int *stop_finding)
+tree_node_t *find_tree_node(tree_node_t *tree, char *cur_word, int *stop_finding, int *cmp_count)
 {
     if (!tree)
         return NULL;
@@ -59,15 +59,17 @@ tree_node_t *find_tree_node(tree_node_t *tree, char *cur_word, int *stop_finding
     tree_node_t *f_tree_node = NULL;
 
 
+    ++(*cmp_count);
+
     if (!cmp)
     {
         *stop_finding = TRUE;
         return tree;
     }
     else if (cmp > 0 && tree->left && !(*stop_finding))
-        f_tree_node = find_tree_node(tree->left, cur_word, stop_finding);
+        f_tree_node = find_tree_node(tree->left, cur_word, stop_finding, cmp_count);
     else if (tree->right && !(*stop_finding))
-        f_tree_node = find_tree_node(tree->right, cur_word, stop_finding);
+        f_tree_node = find_tree_node(tree->right, cur_word, stop_finding, cmp_count);
 
     return f_tree_node;
 }

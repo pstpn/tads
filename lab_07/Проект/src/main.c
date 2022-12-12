@@ -174,7 +174,9 @@ template to be declared, but not defined, in other translation units.",
                 
                 if (!is_list_hash_table)
                 {
-                    int f_index = find_keyword(hash_table, word);
+                    int cmp_count = 0;
+
+                    int f_index = find_keyword(hash_table, word, &cmp_count);
                     if (f_index < 0)
                     {
                         printf(ERR_FINDIND_MSG, RED, RESET);
@@ -182,12 +184,15 @@ template to be declared, but not defined, in other translation units.",
                         break;
                     }
 
-                    printf(HELP_MSG, GREEN, ((keyword_info_t **) hash_table->data)[f_index]->keyword,
+                    printf(HELP_MSG, GREEN, ((keyword_info_t **) hash_table->data)[f_index]->keyword, cmp_count,
                         PURPLE, ((keyword_info_t **) hash_table->data)[f_index]->help, RESET);
                 }
                 else
                 {
-                    list_keyword_info_t *f_word = find_list_keyword(hash_table, word);
+                    int cmp_count = 0;
+
+
+                    list_keyword_info_t *f_word = find_list_keyword(hash_table, word, &cmp_count);
                     if (!f_word)
                     {
                         printf(ERR_FINDIND_MSG, RED, RESET);
@@ -195,7 +200,7 @@ template to be declared, but not defined, in other translation units.",
                         break;
                     }
 
-                    printf(HELP_MSG, GREEN, f_word->keyword,
+                    printf(HELP_MSG, GREEN, f_word->keyword, cmp_count,
                         PURPLE, f_word->help, RESET);
                 }
 

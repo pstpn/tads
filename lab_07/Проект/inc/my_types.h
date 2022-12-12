@@ -51,6 +51,7 @@ typedef struct measure
     char type;
     int count;
     int mem;
+    int avg_cmp_count;
 } measurement_table;
 
 #endif // ___MY_TYPES___

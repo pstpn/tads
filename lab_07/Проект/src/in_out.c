@@ -107,11 +107,12 @@ void print_measures(measurement_table *table, int len)
     draw_line(MEAS_TABLE_WIDTH);
 
     for (int i = 0; i < len; i += 3)
-        printf("|%*c|%*llu     / %*d |%*llu     / %*d |%*llu     / %*d |\n",
-            FIRST_FIELD_WIDTH, table[i].type, SECOND_FIELD_WIDTH / 2, table[i].time,
-            SECOND_FIELD_WIDTH / 2, table[i].mem, SECOND_FIELD_WIDTH / 2, table[i + 1].time,
-            SECOND_FIELD_WIDTH / 2, table[i + 1].mem, SECOND_FIELD_WIDTH / 2, table[i + 2].time,
-            SECOND_FIELD_WIDTH / 2, table[i + 2].mem);
+        printf("|%*c|%*llu  / %*d  /%*d |%*llu  / %*d  /%*d |%*llu  / %*d  /%*d |\n",
+            FIRST_FIELD_WIDTH, table[i].type, SECOND_FIELD_WIDTH / 4, table[i].time,
+            SECOND_FIELD_WIDTH / 4, table[i].mem, SECOND_FIELD_WIDTH / 4, table[i].avg_cmp_count,
+            SECOND_FIELD_WIDTH / 4, table[i + 1].time, SECOND_FIELD_WIDTH / 4, table[i + 1].mem, 
+            SECOND_FIELD_WIDTH / 4, table[i + 1].avg_cmp_count, SECOND_FIELD_WIDTH / 4, table[i + 2].time,
+            SECOND_FIELD_WIDTH / 4 + 1, table[i + 2].mem, SECOND_FIELD_WIDTH / 4, table[i + 2].avg_cmp_count);
     
     draw_line(MEAS_TABLE_WIDTH);
 }

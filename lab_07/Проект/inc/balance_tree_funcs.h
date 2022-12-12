@@ -15,6 +15,6 @@ balance_tree_node_t *b_insert(balance_tree_node_t *tree, balance_tree_node_t *no
 void b_apply(void *tree, void (*f)(void *, void *), void *arg, int is_pre);
 void b_destroy_node(void *node, void *trash);
 balance_tree_node_t *create_keywords_balance_tree(char (*keywords)[MAX_KEYWORD_LEN + 1], int count);
-balance_tree_node_t *b_find_tree_node(balance_tree_node_t *tree, char *cur_word, int *stop_finding);
+balance_tree_node_t *b_find_tree_node(balance_tree_node_t *tree, char *cur_word, int *stop_finding, int *cmp_count);
 
 #endif // ___MY_B_TREE_FUNCS___
