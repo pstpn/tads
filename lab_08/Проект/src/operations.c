@@ -1,19 +1,19 @@
-void get_max_road(int **graph_mtrx, int n, int m)
+void get_cur_max_road(int **graph_mtrx, int n, int m, int *max_road,
+int *cur_road, int cur_i, int start, int ban_ind)
 {
-    int max_road = 0;
+    start += (cur_i == start && ban_ind != -1) ? 1 : 0;
 
-
-    for (int i = 0; i < n; ++i)
-        for (int j = 0; j < m && i < j; ++j)
+    for (int j = (start == ban_ind) ? start + 1 : start;
+        j < m; j += (j + 1 == ban_ind) ? 2 : 1)
+        if (graph_mtrx[cur_i][j])
         {
-            int cur_road = 0;
+            ++(*cur_road);
 
+            get_cur_max_road(graph_mtrx, n, m, max_road, cur_road, j, ++start, cur_i);
 
-            if (graph_mtrx[i][j])
-            {
-                ++cur_road;
-
-                
-            }
+            if (*cur_road > *max_road)
+                *max_road = *cur_road;
+            
+            --(*cur_road);
         }
 }

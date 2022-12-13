@@ -13,6 +13,7 @@
 #include "my_err.h"
 #include "in_out.h"
 #include "w_w_mem.h"
+#include "operations.h"
 
 
 int main(void)
@@ -107,7 +108,18 @@ int main(void)
             }
             case 2:
             {
+                int max_road = 0,
+                    cur_road = 0;
 
+
+                for (int i = 0; i < n; ++i)
+                {
+                    get_cur_max_road(graph_mtrx, n, m, &max_road, &cur_road, i, 0, -1);
+
+                    cur_road = 0;
+                }
+
+                printf("MAX_ROAD: %d\n", max_road);
 
                 break;
             }

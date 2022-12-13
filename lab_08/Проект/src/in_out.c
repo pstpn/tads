@@ -58,7 +58,7 @@ void export_to_dot(FILE *f, const char *graph_name, int **graph_mtrx, int n, int
     fprintf(f, "graph %s {\n", graph_name);
     
     for (int i = 0; i < n; ++i)
-        for (int j = 0; j < m && j < i; ++j)
+        for (int j = i + 1; j < m; ++j)
             if (graph_mtrx[i][j])
                 fprintf(f, "%d -- %d;\n", i, j);
 
