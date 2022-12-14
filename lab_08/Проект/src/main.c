@@ -96,7 +96,7 @@ int main(void)
                 FILE *f = fopen(GRAPH_FILENAME, "w");
                 
 
-                export_to_dot(f, GRAPH_NAME, graph_mtrx, n, m);
+                export_to_dot(f, GRAPH_NAME, graph_mtrx, n, m, NULL, -1);
 
                 fclose(f);
 
@@ -111,15 +111,41 @@ int main(void)
                 int max_road = 0,
                     cur_road = 0;
 
+                int out_arr[MAX_OUT_ROAD];
+                int max_road_graph[MAX_OUT_ROAD];
+
 
                 for (int i = 0; i < n; ++i)
                 {
-                    get_cur_max_road(graph_mtrx, n, m, &max_road, &cur_road, i, 0, -1);
+                    out_arr[0] = i;
+
+                    get_cur_max_road(graph_mtrx, n, m, &max_road, &cur_road, i, out_arr, 1, max_road_graph);
 
                     cur_road = 0;
                 }
 
-                printf("MAX_ROAD: %d\n", max_road);
+                FILE *f = fopen(MAX_ROAD_GRAPH_FILENAME, "w");
+                
+
+                export_to_dot(f, MAX_ROAD_GRAPH_NAME, graph_mtrx, n, m, max_road_graph, max_road);
+
+                fclose(f);
+
+                system(MAKE_MAX_ROAD_GRAPH_COMMAND);
+
+                system(OPEN_MAX_ROAD_GRAPH_PNG_COMMAND);
+
+                // printf("\n\nMAX_ROAD: ");
+
+                // for (int i = 0; i < max_road + 1 && max_road; ++i)
+                // {
+                //     printf("%d", max_road_graph[i]);
+                    
+                //     if (i != max_road)
+                //         printf(" -- ");
+                // }
+
+                // printf("\nMAX_LEN: %d\n\n", max_road);
 
                 break;
             }

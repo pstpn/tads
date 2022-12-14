@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "my_err.h"
+#include "my_def.h"
 
 
 int get_size(FILE *f, int *n, int *m)
@@ -53,13 +54,27 @@ int filling_matrix(FILE *f, int **ptrs, int n, int m)
 }
 
 
-void export_to_dot(FILE *f, const char *graph_name, int **graph_mtrx, int n, int m)
+int is_colored_branch(int *out_arr, int max_road, int a, int b)
+{
+    for (int i = 0; i < max_road; ++i)
+        if ((out_arr[i] == a && out_arr[i + 1] == b) ||
+            (out_arr[i] == b && out_arr[i + 1] == a))
+            return TRUE;
+
+    return FALSE;
+}
+
+
+void export_to_dot(FILE *f, const char *graph_name, int **graph_mtrx,
+int n, int m, int *out_arr, int max_road)
 {
     fprintf(f, "graph %s {\n", graph_name);
     
     for (int i = 0; i < n; ++i)
         for (int j = i + 1; j < m; ++j)
-            if (graph_mtrx[i][j])
+            if (graph_mtrx[i][j] && out_arr && is_colored_branch(out_arr, max_road, i, j))
+                fprintf(f, "%d -- %d [color="BRANCH_COLOR"] ;\n", i, j);
+            else if (graph_mtrx[i][j])
                 fprintf(f, "%d -- %d;\n", i, j);
 
     fprintf(f, "}\n");
